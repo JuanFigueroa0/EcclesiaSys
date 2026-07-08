@@ -1,0 +1,29 @@
+.app-shell {
+    min-height: 100vh;
+    background: var(--bg-app);
+  }
+  
+  .app-content {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    transition: margin-left var(--transition);
+  }
+  
+  .app-content.collapsed {
+    margin-left: var(--sidebar-collapsed);
+  }
+  
+  .app-main {
+    padding: 1.5rem;
+  }
+  
+  @media (max-width: 991.98px) {
+    .app-content,
+    .app-content.collapsed {
+      margin-left: 0;
+    }
+  
+    .app-main {
+      padding: 1rem;
+    }
+  }

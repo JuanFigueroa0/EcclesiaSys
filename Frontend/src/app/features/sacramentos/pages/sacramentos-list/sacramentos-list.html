@@ -1,0 +1,28 @@
+<div class="page-shell">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="page-title">Gestión de sacramentos</h1>
+        <p class="page-subtitle">Administra tipos de sacramento y requisitos asociados.</p>
+      </div>
+  
+      <button class="ecclesia-btn">
+        <i class="bi bi-plus-circle me-2"></i>
+        Nuevo sacramento
+      </button>
+    </div>
+  
+    <div class="row g-4">
+      @for (item of sacramentos; track item.nombre) {
+        <div class="col-12 col-md-6 col-xl-4">
+          <div class="ecclesia-card p-4 h-100">
+            <div class="sacramento-icon mb-3">
+              <i class="bi bi-journal-bookmark-fill"></i>
+            </div>
+            <h2 class="sacramento-title">{{ item.nombre }}</h2>
+            <p class="sacramento-text">Requisitos configurados: {{ item.requisitos }}</p>
+            <span class="badge text-bg-success">{{ item.estado }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>

@@ -1,0 +1,215 @@
+<div class="login-wrapper">
+  <section class="panel-left d-none d-lg-flex">
+    <div class="panel-content">
+      <span class="panel-cross">✝</span>
+      <h1 class="panel-title">EcclesiaSys</h1>
+      <p class="panel-subtitle">Sistema de gestión parroquial</p>
+      <div class="panel-divider"></div>
+      <p class="panel-quote">
+        “Únete a nuestra comunidad digital.”
+      </p>
+    </div>
+  </section>
+
+  <section class="panel-right">
+    <div class="form-container">
+
+      @if (!cuentaEliminada) {
+        <div class="mb-4">
+          <span class="form-cross">✝</span>
+          <h2 class="form-title">Crear cuenta</h2>
+          <p class="form-subtitle">
+            Completa los datos para registrarte
+          </p>
+        </div>
+
+        @if (errorMessage) {
+          <div class="login-alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+
+        @if (successMessage) {
+          <div class="login-alert login-alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>
+              {{ successMessage }}
+              Revisa tu bandeja de entrada y confirma tu correo para activar la cuenta.
+            </span>
+          </div>
+        }
+      }
+
+      <!-- Cuenta eliminada / inactiva -->
+      @if (cuentaEliminada) {
+        <div class="cuenta-eliminada-box">
+          <div class="ce-icon">
+            <i class="bi bi-person-slash"></i>
+          </div>
+          <h4 class="ce-titulo">Cuenta eliminada</h4>
+          <p class="ce-msg">
+            La cuenta <strong>{{ registerForm.value.correo }}</strong> fue eliminada anteriormente. ¿Deseas reactivarla?
+          </p>
+          <p class="ce-submsg">
+            Se enviará un correo de verificación. Luego podrás establecer una nueva contraseña usando
+            "Olvidé mi contraseña".
+          </p>
+
+          @if (errorReactivacion) {
+            <div class="login-alert mt-3 mb-0">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <span>{{ errorReactivacion }}</span>
+            </div>
+          }
+
+          @if (exitoReactivacion) {
+            <div class="login-alert login-alert-success mt-3 mb-0">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>{{ exitoReactivacion }}</span>
+            </div>
+            <a routerLink="/auth/login" class="btn-ecclesia w-100 mt-3 d-block text-center">
+              Ir al inicio de sesión
+            </a>
+          } @else {
+            <div class="d-flex gap-2 mt-3">
+              <button
+                type="button"
+                class="btn btn-outline-secondary flex-fill"
+                (click)="onNoCuentaEliminada()"
+                [disabled]="reactivando"
+              >
+                Usar otro correo
+              </button>
+              <button
+                type="button"
+                class="btn-ecclesia flex-fill"
+                (click)="onReactivar()"
+                [disabled]="reactivando"
+              >
+                @if (!reactivando) {
+                  <span><i class="bi bi-person-check me-2"></i>Reactivar cuenta</span>
+                } @else {
+                  <span class="d-inline-flex align-items-center gap-2">
+                    <span class="spinner-border spinner-border-sm"></span>
+                    <span>Reactivando...</span>
+                  </span>
+                }
+              </button>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Formulario de registro -->
+      @if (!successMessage && !cuentaEliminada) {
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Correo electrónico</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-envelope"></i>
+              </span>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="correo"
+                placeholder="ejemplo@gmail.com"
+                autocomplete="email"
+              />
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label fw-semibold">Contraseña</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-lock"></i>
+              </span>
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                formControlName="contrasena"
+                placeholder="Mínimo 8 caracteres"
+                autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="btn btn-toggle-pass"
+                (click)="togglePassword()"
+              >
+                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Barra de fuerza de contraseña -->
+          @if (registerForm.value.contrasena) {
+            <div class="strength-bar mb-3">
+              <div class="strength-segments">
+                @for (i of [0, 1, 2, 3, 4]; track i) {
+                  <span
+                    class="strength-segment"
+                    [class.filled]="i < strength.score"
+                  ></span>
+                }
+              </div>
+              <span class="strength-label">{{ strength.label }}</span>
+            </div>
+          }
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Confirmar contraseña</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-lock"></i>
+              </span>
+              <input
+                [type]="showConfirm ? 'text' : 'password'"
+                class="form-control"
+                formControlName="confirmar"
+                placeholder="Repite tu contraseña"
+                autocomplete="new-password"
+                [class.is-invalid]="noCoinciden"
+              />
+              <button
+                type="button"
+                class="btn btn-toggle-pass"
+                (click)="toggleConfirm()"
+              >
+                <i class="bi" [ngClass]="showConfirm ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+            @if (noCoinciden) {
+              <div class="invalid-feedback d-block small">
+                Las contraseñas no coinciden.
+              </div>
+            }
+          </div>
+
+          <button
+            type="submit"
+            class="btn-ecclesia"
+            [disabled]="loading"
+          >
+            @if (!loading) {
+              <span>Crear cuenta</span>
+            } @else {
+              <span class="d-inline-flex align-items-center gap-2">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Registrando...</span>
+              </span>
+            }
+          </button>
+
+          <div class="text-center mt-4">
+            <span class="text-muted small">¿Ya tienes cuenta? </span>
+            <a routerLink="/auth/login" class="small fw-semibold">
+              Iniciar sesión
+            </a>
+          </div>
+        </form>
+      }
+    </div>
+  </section>
+</div>

@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+:root {
+  --primary: #1a3a5c;
+  --primary-light: #2a5298;
+  --primary-hover: #122b45;
+  --accent: #c9a84c;
+  --accent-light: #e8c860;
+  --accent-50: rgba(201, 168, 76, 0.1);
+
+  --text-primary: #1a2332;
+  --text-muted: #64748b;
+
+  --bg-app: #f1f5f9;
+  --bg-light: #f8fafc;
+
+  --bg-sidebar: #0f2540;
+  --bg-sidebar-hover: rgba(255, 255, 255, 0.07);
+  --bg-sidebar-active: rgba(201, 168, 76, 0.12);
+  --text-sidebar: rgba(255, 255, 255, 0.7);
+
+  --sidebar-width: 260px;
+  --sidebar-collapsed: 64px;
+  --navbar-height: 64px;
+
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-display: 'Cinzel', Georgia, serif;
+
+  --transition: 0.2s ease;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: var(--font-body);
+  background: var(--bg-app);
+  color: var(--text-primary);
+}
+
+body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+.page-shell {
+  min-height: 100vh;
+  background: var(--bg-app);
+}
+
+.page-title {
+  font-family: var(--font-display);
+  color: var(--primary);
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  margin: 0.35rem 0 0;
+}
+
+.ecclesia-card {
+  background: #fff;
+  border: 1px solid #e8edf5;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(15, 37, 64, 0.06);
+}
+
+.ecclesia-btn {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.72rem 1rem;
+  font-weight: 700;
+  transition: all var(--transition);
+}
+
+.ecclesia-btn:hover {
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  color: #fff;
+}

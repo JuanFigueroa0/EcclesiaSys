@@ -1,0 +1,34 @@
+<div class="page-shell">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="page-title">Gestión de roles</h1>
+        <p class="page-subtitle">Administra niveles de acceso y permisos del sistema.</p>
+      </div>
+  
+      <button class="ecclesia-btn">
+        <i class="bi bi-shield-plus me-2"></i>
+        Nuevo rol
+      </button>
+    </div>
+  
+    <div class="row g-4">
+      @for (item of roles; track item.nombre) {
+        <div class="col-12 col-md-6">
+          <div class="ecclesia-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h2 class="rol-title">{{ item.nombre }}</h2>
+                <p class="rol-desc mb-0">{{ item.descripcion }}</p>
+              </div>
+              <span class="rol-badge">{{ item.permisos }} permisos</span>
+            </div>
+  
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-primary btn-sm">Editar</button>
+              <button class="btn btn-outline-secondary btn-sm">Ver permisos</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>

@@ -1,0 +1,102 @@
+<div class="sidebar-overlay" [class.visible]="mobileOpen" (click)="closeMobile.emit()"></div>
+
+<aside class="sidebar" [class.collapsed]="collapsed" [class.mobile-open]="mobileOpen">
+  <a routerLink="/app/dashboard" class="sidebar-brand" (click)="closeOnMobile()">
+    <div class="sidebar-brand-icon">
+      <i class="bi bi-building"></i>
+    </div>
+
+    <div class="sidebar-brand-text">
+      <div class="sidebar-brand-name">EcclesiaSys</div>
+      <div class="sidebar-brand-sub">Sistema Parroquial</div>
+    </div>
+  </a>
+
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">General</div>
+
+      <ul class="p-0 m-0">
+        <li class="sidebar-item">
+          <a routerLink="/app/dashboard" routerLinkActive="active" class="sidebar-link" data-tooltip="Dashboard"
+            (click)="closeOnMobile()">
+            <span class="sidebar-link-icon"><i class="bi bi-grid-1x2-fill"></i></span>
+            <span class="sidebar-link-text">Dashboard</span>
+          </a>
+        </li>
+
+        <li class="sidebar-item">
+          <a routerLink="/app/perfil" routerLinkActive="active" class="sidebar-link" data-tooltip="Perfil"
+            (click)="closeOnMobile()">
+            <span class="sidebar-link-icon"><i class="bi bi-person-circle"></i></span>
+            <span class="sidebar-link-text">Perfil</span>
+          </a>
+        </li>
+
+        <li class="sidebar-item">
+          <a routerLink="/app/solicitudes" routerLinkActive="active" class="sidebar-link" data-tooltip="Solicitudes"
+            (click)="closeOnMobile()">
+            <span class="sidebar-link-icon"><i class="bi bi-file-earmark-text"></i></span>
+            <span class="sidebar-link-text">Solicitudes</span>
+            <span class="sidebar-badge">3</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Administración</div>
+
+      <ul class="p-0 m-0">
+        <li class="sidebar-item">
+          <a routerLink="/app/usuarios" routerLinkActive="active" class="sidebar-link" data-tooltip="Usuarios"
+            (click)="closeOnMobile()">
+            <span class="sidebar-link-icon"><i class="bi bi-people-fill"></i></span>
+            <span class="sidebar-link-text">Usuarios</span>
+          </a>
+        </li>
+
+        <li class="sidebar-item">
+          <a routerLink="/app/roles" routerLinkActive="active" class="sidebar-link" data-tooltip="Roles"
+            (click)="closeOnMobile()">
+            <span class="sidebar-link-icon"><i class="bi bi-shield-lock-fill"></i></span>
+            <span class="sidebar-link-text">Roles</span>
+          </a>
+        </li>
+
+        <li class="sidebar-item">
+          <a routerLink="/app/sacramentos" routerLinkActive="active" class="sidebar-link" data-tooltip="Sacramentos"
+            (click)="closeOnMobile()">
+            <span class="sidebar-link-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
+            <span class="sidebar-link-text">Sacramentos</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar">
+        {{ initials }}
+      </div>
+
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name">
+          {{ fullName }}
+        </div>
+
+        <div class="sidebar-user-role">
+          {{ role }}
+        </div>
+      </div>
+    </div>
+    
+
+    <button type="button" class="sidebar-toggle" (click)="collapsed = !collapsed">
+      <span class="sidebar-toggle-icon">
+        <i class="bi bi-chevron-left"></i>
+      </span>
+    </button>
+  </div>
+</aside>

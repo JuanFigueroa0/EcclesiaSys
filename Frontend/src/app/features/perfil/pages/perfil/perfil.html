@@ -1,0 +1,232 @@
+@if(cargando) {
+
+<div class="text-center p-5">
+  <span>Cargando perfil...</span>
+</div>
+
+} @else {
+
+<div class="perfil-card" *ngIf="usuario">
+
+  <!-- AVATAR -->
+  <div class="perfil-avatar">
+    {{ inicialAvatar }}
+  </div>
+
+  <!-- NOMBRE -->
+  <h2>
+    {{ perfilForm.value.primer_nombre || usuario.correo }}
+    {{ perfilForm.value.primer_apellido || '' }}
+  </h2>
+
+  <!-- ALERTA -->
+  @if(!usuario?.perfil_completo) {
+  <div class="alert alert-warning mt-2">
+    Perfil incompleto. Completa tu información.
+  </div>
+  }
+
+</div>
+
+<!-- TABS -->
+<div class="perfil-tabs">
+
+  <button [class.active]="activeTab === 'info'" (click)="cambiarTab('info')">
+    Información personal
+  </button>
+
+  <button [class.active]="activeTab === 'security'" (click)="cambiarTab('security')">
+    Seguridad
+  </button>
+
+  <button [class.active]="activeTab === 'sessions'" (click)="cambiarTab('sessions')">
+    Sesiones
+  </button>
+
+</div>
+
+<!-- FORMULARIO -->
+@if(activeTab === 'info') {
+
+<form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()" class="ecclesia-card p-4">
+
+  <div class="row g-3">
+
+    <div class="col-md-6">
+      <label>Primer nombre *</label>
+      <input class="form-control" formControlName="primer_nombre">
+    </div>
+
+    <div class="col-md-6">
+      <label>Segundo nombre</label>
+      <input class="form-control" formControlName="segundo_nombre">
+    </div>
+
+    <div class="col-md-6">
+      <label>Primer apellido *</label>
+      <input class="form-control" formControlName="primer_apellido">
+    </div>
+
+    <div class="col-md-6">
+      <label>Segundo apellido</label>
+      <input class="form-control" formControlName="segundo_apellido">
+    </div>
+
+    <div class="col-md-6">
+      <label>Fecha nacimiento *</label>
+      <input type="date" class="form-control" formControlName="fecha_nacimiento">
+    </div>
+
+    <!-- SEXO -->
+    <div class="col-md-6">
+      <label>Sexo *</label>
+      <select class="form-control" formControlName="sexo">
+
+        <option value="" disabled>Seleccione</option>
+
+        <option *ngFor="let s of sexos" [value]="s.value">
+          {{ s.label }}
+        </option>
+
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <label>Lugar nacimiento</label>
+      <input class="form-control" formControlName="lugar_nacimiento">
+    </div>
+
+    <div class="col-md-6">
+      <label>Departamento</label>
+      <input class="form-control" formControlName="departamento">
+    </div>
+
+    <div class="col-md-6">
+      <label>Municipio</label>
+      <input class="form-control" formControlName="municipio">
+    </div>
+
+    <!-- TIPO DOCUMENTO -->
+    <div class="col-md-6">
+      <label>Tipo documento *</label>
+      <select class="form-control" formControlName="tipo_documento">
+
+        <option value="" disabled>Seleccione</option>
+
+        <option *ngFor="let t of tiposDocumento" [value]="t">
+          {{ t }}
+        </option>
+
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <label>Número documento *</label>
+      <input class="form-control" formControlName="numero_documento">
+    </div>
+
+    <!-- ESTADO CIVIL -->
+    <div class="col-md-6">
+      <label>Estado civil</label>
+      <select class="form-control" formControlName="estado_civil">
+
+        <option value="" disabled>Seleccione</option>
+
+        <option *ngFor="let e of estadosCiviles" [value]="e.value">
+          {{ e.label }}
+        </option>
+
+      </select>
+    </div>
+
+  </div>
+
+  <button type="submit" class="ecclesia-btn mt-4" [disabled]="perfilForm.invalid || !hayCambios()">
+
+    {{ perfilExiste ? 'Actualizar perfil' : 'Completar perfil' }}
+
+  </button>
+
+</form>
+
+}
+
+@if(activeTab === 'security') {
+
+<div class="ecclesia-card p-4">
+
+  <h5>Cambiar correo</h5>
+
+  <form [formGroup]="emailForm" (ngSubmit)="actualizarCorreo()">
+
+    <input class="form-control mb-2" placeholder="Nuevo correo" formControlName="nuevo_correo">
+
+    <input class="form-control mb-2" type="password" placeholder="Contraseña actual"
+      formControlName="contrasena_actual">
+
+    <button type="submit" class="ecclesia-btn mb-4" [disabled]="emailForm.invalid">
+
+      Cambiar correo
+    </button>
+
+  </form>
+
+  <hr>
+
+  <h5>Cambiar contraseña</h5>
+
+  <form [formGroup]="passwordForm" (ngSubmit)="actualizarPassword()">
+
+    <input class="form-control mb-2" type="password" placeholder="Contraseña actual"
+      formControlName="contrasena_actual">
+
+    <input class="form-control mb-2" type="password" placeholder="Nueva contraseña"
+      formControlName="contrasena_nueva">
+
+    <input class="form-control mb-2" type="password" placeholder="Confirmar contraseña"
+      formControlName="confirmar_contrasena">
+
+    <button type="submit" class="ecclesia-btn" [disabled]="passwordForm.invalid || !passwordCoincide()">
+
+      Cambiar contraseña
+    </button>
+
+  </form>
+
+</div>
+
+}
+
+<!-- SESIONES -->
+@if(activeTab === 'sessions') {
+
+<table class="table">
+
+  <thead>
+    <tr>
+      <th>Dispositivo</th>
+      <th>IP</th>
+      <th>Último uso</th>
+      <th>Activa</th>
+    </tr>
+  </thead>
+
+
+  <tbody>
+
+    @for(s of sesiones; track s.id) {
+    <tr>
+      <td>{{ s.dispositivo }}</td>
+      <td>{{ s.ip_address }}</td>
+      <td>{{ s.fecha_ultimo_uso }}</td>
+      <td>{{ s.activa ? 'Sí' : 'No' }}</td>
+    </tr>
+    }
+
+  </tbody>
+
+</table>
+
+}
+
+}

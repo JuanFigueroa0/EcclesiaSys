@@ -1,0 +1,126 @@
+<div class="login-wrapper">
+    <section class="panel-left d-none d-lg-flex">
+      <div class="panel-content">
+        <span class="panel-cross">✝</span>
+        <h1 class="panel-title">EcclesiaSys</h1>
+        <p class="panel-subtitle">Sistema de gestión parroquial</p>
+        <div class="panel-divider"></div>
+        <p class="panel-quote">
+          “Administra sacramentos, usuarios y solicitudes en una sola plataforma.”
+        </p>
+      </div>
+    </section>
+  
+    <section class="panel-right">
+      <div class="form-container">
+        <div class="mb-4">
+          <span class="form-cross">✝</span>
+          <h2 class="form-title">Iniciar sesión</h2>
+          <p class="form-subtitle">
+            Accede al panel principal de EcclesiaSys
+          </p>
+        </div>
+  
+        @if (errorMessage) {
+          <div class="login-alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+  
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Correo electrónico</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-envelope"></i>
+              </span>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                placeholder="admin@ecclesiasys.com"
+              />
+            </div>
+          </div>
+  
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Contraseña</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-lock"></i>
+              </span>
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                formControlName="password"
+                placeholder="Ingresa tu contraseña"
+              />
+  
+              <button
+                type="button"
+                class="btn btn-toggle-pass"
+                (click)="togglePassword()"
+              >
+                <i
+                  class="bi"
+                  [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+                ></i>
+              </button>
+            </div>
+          </div>
+  
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="rememberMe"
+              />
+              <label
+                class="form-check-label text-muted small"
+                for="rememberMe"
+              >
+                Recordarme
+              </label>
+            </div>
+  
+            <a
+              routerLink="/auth/forgot-password"
+              class="small fw-semibold"
+            >
+              ¿Olvidaste tu contraseña?
+            </a>
+          </div>
+  
+          <button
+            type="submit"
+            class="btn-ecclesia"
+            [disabled]="loading"
+          >
+            @if (!loading) {
+              <span>Ingresar</span>
+            } @else {
+              <span class="d-inline-flex align-items-center gap-2">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Ingresando...</span>
+              </span>
+            }
+          </button>
+
+          <div class="text-center mt-4">
+            <span class="text-muted small">¿No tienes cuenta? </span>
+            <a
+              routerLink="/auth/register"
+              class="small fw-semibold"
+            >
+              Crear cuenta
+            </a>
+          </div>
+        </form>
+      </div>
+    </section>
+<app-chatbot>
+
+</app-chatbot>
+  </div>

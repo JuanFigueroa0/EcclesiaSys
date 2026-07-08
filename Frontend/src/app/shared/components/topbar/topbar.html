@@ -1,0 +1,41 @@
+<header class="topbar">
+  <div class="topbar-left">
+    <button type="button" class="topbar-menu-btn" (click)="menuClick.emit()">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <div class="topbar-titulo">
+      <span class="topbar-cruz">✝</span>
+      <span>EcclesiaSys</span>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <button type="button" class="topbar-icon-btn">
+      <i class="bi bi-bell"></i>
+      <span class="topbar-noti-badge">2</span>
+    </button>
+
+    <div class="topbar-user-box">
+      <div class="topbar-avatar">
+        {{ initial }}
+      </div>
+
+      <div class="d-none d-md-block">
+
+        <div class="topbar-user-correo">
+          {{ fullName }}
+        </div>
+
+        <div class="topbar-user-rol">
+          {{ role }}
+        </div>
+
+      </div>
+
+      <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="logout()">
+        Salir
+      </button>
+    </div>
+  </div>
+</header>

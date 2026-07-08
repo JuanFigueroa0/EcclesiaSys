@@ -1,0 +1,28 @@
+<div class="chatbot-container">
+    <button class="chat-toggle" (click)="toggleChat()">
+        {{ isOpen() ? '✕' : '💬' }}
+    </button>
+
+    @if (isOpen()) {
+    <div class="chat-window">
+        <div class="chat-header">Asistente</div>
+
+        <div class="chat-messages">
+            @for (msg of messages(); track $index) {
+            <div class="message" [class.user]="msg.from === 'user'" [class.bot]="msg.from === 'bot'">
+                {{ msg.text }}
+            </div>
+            }
+            @if (loading()) {
+            <div class="message bot">Escribiendo...</div>
+            }
+        </div>
+
+        <div class="chat-input">
+            <input type="text" [ngModel]="userInput()" (ngModelChange)="userInput.set($event)"
+                (keyup.enter)="sendMessage()" placeholder="Escribe tu pregunta..." />
+            <button (click)="sendMessage()">Enviar</button>
+        </div>
+    </div>
+    }
+</div>
