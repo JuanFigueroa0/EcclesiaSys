@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth';
+import { AuthService } from '../../../features/auth/services/auth.service';
 import { PerfilService } from '../../../features/perfil/services/perfil.service';
 import { TokenService } from '../../../core/services/token';
 

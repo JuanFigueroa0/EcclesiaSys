@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable, tap } from 'rxjs';
 
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
 import {
   LoginRequest,
@@ -11,10 +11,10 @@ import {
   RegisterRequest,
   RegisterResponse,
   ReactivarCuentaResponse
-} from '../models/auth.model';
+} from '../../../core/models/auth.model';
 
-import { TokenService } from './token';
-import { PerfilService } from '../../features/perfil/services/perfil.service';
+import { TokenService } from '../../../core/services/token';
+import { PerfilService } from '../../perfil/services/perfil.service';
 
 @Injectable({
   providedIn: 'root',

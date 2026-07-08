@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SacramentosList } from './sacramentos-list';
+import { SacramentosListComponent} from './sacramentos-list';
 
-describe('SacramentosList', () => {
-  let component: SacramentosList;
-  let fixture: ComponentFixture<SacramentosList>;
+describe('SacramentosListComponent', () => {
+  let component: SacramentosListComponent;
+  let fixture: ComponentFixture<SacramentosListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SacramentosList],
+      imports: [SacramentosListComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SacramentosList);

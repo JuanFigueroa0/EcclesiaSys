@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { Chatbot } from '../../../../shared/components/chatbot/chatbot';
 
-import { AuthService } from '../../../../core/services/auth';
+import { AuthService } from '../../services/auth.service';
 import { PerfilService } from '../../../perfil/services/perfil.service';
 
 @Component({

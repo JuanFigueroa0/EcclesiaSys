@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { AuthService } from '../../../../core/services/auth';
+import { AuthService } from '../../services/auth.service';
 
 interface PasswordStrength {
   esValida: boolean;
