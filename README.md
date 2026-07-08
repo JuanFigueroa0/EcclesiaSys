@@ -10,7 +10,7 @@ Sistema de gestión parroquial desarrollado con:
 
 # Requisitos
 
-- Python 3.12+
+- Python 3.11 y  3.14
 - Node.js 20+
 - Angular CLI
 - Git
