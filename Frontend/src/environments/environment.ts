@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://ecclesia-sys-backend-orcin.vercel.app/api/v1',
+  apiUrl: 'http://localhost:8000/api/v1',
 };

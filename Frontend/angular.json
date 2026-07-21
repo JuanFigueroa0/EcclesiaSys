@@ -44,6 +44,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -57,31 +63,31 @@
                 }
               ],
               "outputHashing": "all"
-            },
-            "development": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
-            }
           },
-          "defaultConfiguration": "production"
+          "development": {
+            "optimization": false,
+            "extractLicenses": false,
+            "sourceMap": true
+          }
         },
-        "serve": {
-          "builder": "@angular/build:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "ecclesia-sys:build:production"
-            },
-            "development": {
-              "buildTarget": "ecclesia-sys:build:development"
-            }
+        "defaultConfiguration": "production"
+      },
+      "serve": {
+        "builder": "@angular/build:dev-server",
+        "configurations": {
+          "production": {
+            "buildTarget": "ecclesia-sys:build:production"
           },
-          "defaultConfiguration": "development"
+          "development": {
+            "buildTarget": "ecclesia-sys:build:development"
+          }
         },
-        "test": {
-          "builder": "@angular/build:unit-test"
-        }
+        "defaultConfiguration": "development"
+      },
+      "test": {
+        "builder": "@angular/build:unit-test"
       }
     }
   }
+}
 }
