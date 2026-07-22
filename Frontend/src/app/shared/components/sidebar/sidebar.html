@@ -13,66 +13,148 @@
   </a>
 
   <nav class="sidebar-nav">
+    <!-- SECCIÓN: PRINCIPAL -->
     <div class="sidebar-section">
-      <div class="sidebar-section-label">General</div>
+      <div class="sidebar-section-label">Principal</div>
 
       <ul class="p-0 m-0">
         <li class="sidebar-item">
-          <a routerLink="/app/dashboard" routerLinkActive="active" class="sidebar-link" data-tooltip="Dashboard"
-            (click)="closeOnMobile()">
-            <span class="sidebar-link-icon"><i class="bi bi-grid-1x2-fill"></i></span>
+          <a routerLink="/app/dashboard" routerLinkActive="active" class="sidebar-link" data-tooltip="Dashboard" (click)="closeOnMobile()">
+            <span class="sidebar-link-icon"><i class="bi bi-speedometer2"></i></span>
             <span class="sidebar-link-text">Dashboard</span>
           </a>
         </li>
 
         <li class="sidebar-item">
-          <a routerLink="/app/perfil" routerLinkActive="active" class="sidebar-link" data-tooltip="Perfil"
-            (click)="closeOnMobile()">
+          <a routerLink="/app/solicitudes" routerLinkActive="active" class="sidebar-link" data-tooltip="Solicitudes" (click)="closeOnMobile()">
+            <span class="sidebar-link-icon"><i class="bi bi-inbox-fill"></i></span>
+            <span class="sidebar-link-text">Solicitudes</span>
+            @if (solicitudesCount > 0) {
+              <span class="sidebar-badge">{{ solicitudesCount }}</span>
+            }
+          </a>
+        </li>
+
+        <li class="sidebar-item">
+          <a routerLink="/app/notificaciones" routerLinkActive="active" class="sidebar-link" data-tooltip="Notificaciones" (click)="closeOnMobile()">
+            <span class="sidebar-link-icon"><i class="bi bi-bell"></i></span>
+            <span class="sidebar-link-text">Notificaciones</span>
+            @if (notificacionesCount > 0) {
+              <span class="sidebar-badge bg-warning text-dark">{{ notificacionesCount }}</span>
+            }
+          </a>
+        </li>
+
+        <li class="sidebar-item">
+          <a routerLink="/app/perfil" routerLinkActive="active" class="sidebar-link" data-tooltip="Perfil" (click)="closeOnMobile()">
             <span class="sidebar-link-icon"><i class="bi bi-person-circle"></i></span>
             <span class="sidebar-link-text">Perfil</span>
           </a>
         </li>
-
-        <li class="sidebar-item">
-          <a routerLink="/app/solicitudes" routerLinkActive="active" class="sidebar-link" data-tooltip="Solicitudes"
-            (click)="closeOnMobile()">
-            <span class="sidebar-link-icon"><i class="bi bi-file-earmark-text"></i></span>
-            <span class="sidebar-link-text">Solicitudes</span>
-            <span class="sidebar-badge">3</span>
-          </a>
-        </li>
       </ul>
     </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Administración</div>
+    <!-- SECCIÓN: GESTIÓN -->
+    @if (tieneSeccionGestion) {
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Gestión Parroquial</div>
 
-      <ul class="p-0 m-0">
-        <li class="sidebar-item">
-          <a routerLink="/app/usuarios" routerLinkActive="active" class="sidebar-link" data-tooltip="Usuarios"
-            (click)="closeOnMobile()">
-            <span class="sidebar-link-icon"><i class="bi bi-people-fill"></i></span>
-            <span class="sidebar-link-text">Usuarios</span>
-          </a>
-        </li>
+        <ul class="p-0 m-0">
+          @if (tieneRol(['Superadmin', 'Administrador Parroquial', 'Secretario', 'Párroco'])) {
+            <li class="sidebar-item">
+              <a routerLink="/app/sacramentos" routerLinkActive="active" class="sidebar-link" data-tooltip="Sacramentos" (click)="closeOnMobile()">
+                <span class="sidebar-link-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
+                <span class="sidebar-link-text">Sacramentos</span>
+              </a>
+            </li>
+          }
 
-        <li class="sidebar-item">
-          <a routerLink="/app/roles" routerLinkActive="active" class="sidebar-link" data-tooltip="Roles"
-            (click)="closeOnMobile()">
-            <span class="sidebar-link-icon"><i class="bi bi-shield-lock-fill"></i></span>
-            <span class="sidebar-link-text">Roles</span>
-          </a>
-        </li>
+          @if (tieneRol(['Superadmin', 'Administrador Parroquial', 'Secretario', 'Párroco'])) {
+            <li class="sidebar-item">
+              <a routerLink="/app/personas" routerLinkActive="active" class="sidebar-link" data-tooltip="Personas" (click)="closeOnMobile()">
+                <span class="sidebar-link-icon"><i class="bi bi-people"></i></span>
+                <span class="sidebar-link-text">Personas</span>
+              </a>
+            </li>
+          }
 
-        <li class="sidebar-item">
-          <a routerLink="/app/sacramentos" routerLinkActive="active" class="sidebar-link" data-tooltip="Sacramentos"
-            (click)="closeOnMobile()">
-            <span class="sidebar-link-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
-            <span class="sidebar-link-text">Sacramentos</span>
-          </a>
-        </li>
-      </ul>
-    </div>
+          <li class="sidebar-item">
+            <a routerLink="/app/eventos" routerLinkActive="active" class="sidebar-link" data-tooltip="Eventos" (click)="closeOnMobile()">
+              <span class="sidebar-link-icon"><i class="bi bi-calendar3"></i></span>
+              <span class="sidebar-link-text">Eventos</span>
+            </a>
+          </li>
+
+          <li class="sidebar-item">
+            <a routerLink="/app/certificados" routerLinkActive="active" class="sidebar-link" data-tooltip="Certificados" (click)="closeOnMobile()">
+              <span class="sidebar-link-icon"><i class="bi bi-patch-check"></i></span>
+              <span class="sidebar-link-text">Certificados</span>
+            </a>
+          </li>
+
+          <li class="sidebar-item">
+            <a routerLink="/app/cursos" routerLinkActive="active" class="sidebar-link" data-tooltip="Cursos" (click)="closeOnMobile()">
+              <span class="sidebar-link-icon"><i class="bi bi-mortarboard"></i></span>
+              <span class="sidebar-link-text">Cursos</span>
+            </a>
+          </li>
+
+          @if (tieneRol(['Superadmin', 'Administrador Parroquial', 'Secretario'])) {
+            <li class="sidebar-item">
+              <a routerLink="/app/pagos" routerLinkActive="active" class="sidebar-link" data-tooltip="Pagos" (click)="closeOnMobile()">
+                <span class="sidebar-link-icon"><i class="bi bi-cash-coin"></i></span>
+                <span class="sidebar-link-text">Pagos</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- SECCIÓN: ADMINISTRACIÓN -->
+    @if (tieneSeccionAdministracion) {
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Administración</div>
+
+        <ul class="p-0 m-0">
+          @if (tieneRol(['Superadmin', 'Administrador Parroquial'])) {
+            <li class="sidebar-item">
+              <a routerLink="/app/usuarios" routerLinkActive="active" class="sidebar-link" data-tooltip="Usuarios" (click)="closeOnMobile()">
+                <span class="sidebar-link-icon"><i class="bi bi-people-fill"></i></span>
+                <span class="sidebar-link-text">Usuarios</span>
+              </a>
+            </li>
+          }
+
+          @if (tieneRol(['Superadmin'])) {
+            <li class="sidebar-item">
+              <a routerLink="/app/roles" routerLinkActive="active" class="sidebar-link" data-tooltip="Roles" (click)="closeOnMobile()">
+                <span class="sidebar-link-icon"><i class="bi bi-shield-lock-fill"></i></span>
+                <span class="sidebar-link-text">Roles</span>
+              </a>
+            </li>
+          }
+
+          @if (tieneRol(['Superadmin'])) {
+            <li class="sidebar-item">
+              <a routerLink="/app/auditoria" routerLinkActive="active" class="sidebar-link" data-tooltip="Auditoría" (click)="closeOnMobile()">
+                <span class="sidebar-link-icon"><i class="bi bi-journal-text"></i></span>
+                <span class="sidebar-link-text">Auditoría</span>
+              </a>
+            </li>
+          }
+
+          @if (tieneRol(['Superadmin', 'Administrador Parroquial'])) {
+            <li class="sidebar-item">
+              <a routerLink="/app/configuracion" routerLinkActive="active" class="sidebar-link" data-tooltip="Configuración" (click)="closeOnMobile()">
+                <span class="sidebar-link-icon"><i class="bi bi-gear"></i></span>
+                <span class="sidebar-link-text">Configuración</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
   </nav>
 
   <div class="sidebar-footer">
@@ -91,7 +173,6 @@
         </div>
       </div>
     </div>
-    
 
     <button type="button" class="sidebar-toggle" (click)="collapsed = !collapsed">
       <span class="sidebar-toggle-icon">

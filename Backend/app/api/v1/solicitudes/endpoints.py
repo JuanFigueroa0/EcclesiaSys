@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File,
 from sqlalchemy.orm import Session
 from typing import Optional
 
-from app.api.deps import get_db, get_current_user, get_current_user_with_profile
+from app.api.deps import get_db, get_current_user, get_current_active_user, get_current_user_with_profile
 from app.models.usuario import Usuario
 from app.schemas.solicitud import (
     SolicitudSacramentoCreate,
@@ -23,10 +23,12 @@ router = APIRouter(tags=["Solicitudes de Sacramento"])
 # ─────────────────────────────────────────────
 
 def _es_admin(db: Session, usuario: Usuario) -> bool:
-    roles_admin = ["Administrador Parroquial", "Párroco", "Superadmin"]
+    roles_usuario = UsuarioRolRepository.get_roles_usuario(db, usuario.id)
+    nombres_roles = [r.nombre.lower().strip() for r in roles_usuario if hasattr(r, 'nombre')]
+    roles_admin = ["administrador parroquial", "párroco", "parroco", "superadmin", "secretario", "secretaria", "admin"]
     return any(
-        UsuarioRolRepository.usuario_tiene_rol(db, usuario.id, r)
-        for r in roles_admin
+        any(admin_r in user_r or user_r in admin_r for user_r in nombres_roles)
+        for admin_r in roles_admin
     )
 
 

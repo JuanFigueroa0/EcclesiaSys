@@ -1,0 +1,153 @@
+<div class="pg-wrap p-4">
+  <div class="mb-4">
+    <h1 class="h3 mb-1 font-weight-bold">Configuración del Sistema</h1>
+    <p class="text-muted mb-0">Parámetros globales, certificados, firmas y notificaciones</p>
+  </div>
+
+  @if (mensajeExito) {
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i>{{ mensajeExito }}
+    </div>
+  }
+
+  <div class="row g-4">
+    <!-- Pestañas laterales -->
+    <div class="col-md-3">
+      <div class="list-group shadow-sm border-0">
+        <button type="button" class="list-group-item list-group-item-action py-3 fw-semibold" [class.active]="tabActivo === 'general'" (click)="tabActivo = 'general'">
+          <i class="bi bi-building me-2"></i>Datos Parroquiales
+        </button>
+        <button type="button" class="list-group-item list-group-item-action py-3 fw-semibold" [class.active]="tabActivo === 'certificados'" (click)="tabActivo = 'certificados'">
+          <i class="bi bi-patch-check me-2"></i>Certificados
+        </button>
+        <button type="button" class="list-group-item list-group-item-action py-3 fw-semibold" [class.active]="tabActivo === 'retencion'" (click)="tabActivo = 'retencion'">
+          <i class="bi bi-archive me-2"></i>Retención Docs
+        </button>
+        <button type="button" class="list-group-item list-group-item-action py-3 fw-semibold" [class.active]="tabActivo === 'notifics'" (click)="tabActivo = 'notifics'">
+          <i class="bi bi-bell me-2"></i>Notificaciones
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenido de las Pestañas -->
+    <div class="col-md-9">
+      @if (tabActivo === 'general') {
+        <div class="card border-0 shadow-sm p-4">
+          <h5 class="font-weight-bold mb-4"><i class="bi bi-building text-primary me-2"></i>Información Parroquial</h5>
+          <form [formGroup]="generalForm" (ngSubmit)="guardarFormulario(generalForm)">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label font-weight-bold">Nombre de la Parroquia *</label>
+                <input type="text" class="form-control" formControlName="nombre_parroquia" />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label font-weight-bold">Párroco Actual *</label>
+                <input type="text" class="form-control" formControlName="parroco_actual" />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label font-weight-bold">Teléfono de Contacto *</label>
+                <input type="text" class="form-control" formControlName="telefono" />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label font-weight-bold">Email Institucional *</label>
+                <input type="email" class="form-control" formControlName="email_parroquia" />
+              </div>
+
+              <div class="col-md-12">
+                <label class="form-label font-weight-bold">Dirección Parroquial *</label>
+                <input type="text" class="form-control" formControlName="direccion" />
+              </div>
+            </div>
+            <div class="text-end mt-4">
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-save me-1"></i>Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      } @else if (tabActivo === 'certificados') {
+        <div class="card border-0 shadow-sm p-4">
+          <h5 class="font-weight-bold mb-4"><i class="bi bi-patch-check text-primary me-2"></i>Plantillas y Formato</h5>
+          <form [formGroup]="certificadosForm" (ngSubmit)="guardarFormulario(certificadosForm)">
+            <div class="mb-4">
+              <label class="form-label font-weight-bold">Estilo de Plantilla</label>
+              <select class="form-select" formControlName="plantilla_activa">
+                <option value="clasica">Clásica (Tradicional Eclesiástica)</option>
+                <option value="moderna">Moderna Elegante</option>
+                <option value="minimalista">Minimalista</option>
+              </select>
+            </div>
+
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="qrSwitch" formControlName="incluir_qr">
+              <label class="form-check-label fw-semibold" for="qrSwitch">Incluir Código QR de Validación Verificable</label>
+            </div>
+
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="selloSwitch" formControlName="incluir_sello">
+              <label class="form-check-label fw-semibold" for="selloSwitch">Incluir Sello Digital Parroquial</label>
+            </div>
+
+            <div class="text-end mt-4">
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-save me-1"></i>Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      } @else if (tabActivo === 'retencion') {
+        <div class="card border-0 shadow-sm p-4">
+          <h5 class="font-weight-bold mb-4"><i class="bi bi-archive text-primary me-2"></i>Políticas de Conservación</h5>
+          <form [formGroup]="retencionForm" (ngSubmit)="guardarFormulario(retencionForm)">
+            <div class="mb-4">
+              <label class="form-label font-weight-bold">Días de retención de documentos digitales (Mín. 365 días)</label>
+              <input type="number" class="form-control" style="max-width: 200px;" formControlName="dias_retencion_docs" min="365" step="365" />
+            </div>
+
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle-fill me-2"></i>
+              Los libros y fe de bautismos se conservan indefinidamente según el derecho canónico.
+            </div>
+
+            <div class="text-end mt-4">
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-save me-1"></i>Guardar Configuración
+              </button>
+            </div>
+          </form>
+        </div>
+      } @else if (tabActivo === 'notifics') {
+        <div class="card border-0 shadow-sm p-4">
+          <h5 class="font-weight-bold mb-4"><i class="bi bi-bell text-primary me-2"></i>Canales de Notificación</h5>
+          <form [formGroup]="notificacionesForm" (ngSubmit)="guardarFormulario(notificacionesForm)">
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="emailSwitch" formControlName="notif_email">
+              <label class="form-check-label fw-semibold" for="emailSwitch">Enviar Notificaciones por Correo Electrónico</label>
+            </div>
+
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="telegramSwitch" formControlName="notif_telegram">
+              <label class="form-check-label fw-semibold" for="telegramSwitch">Enviar Alertas por Telegram Bot</label>
+            </div>
+
+            @if (notificacionesForm.get('notif_telegram')?.value) {
+              <div class="mb-3">
+                <label class="form-label font-weight-bold">Token Bot de Telegram</label>
+                <input type="password" class="form-control" formControlName="telegram_bot_token" placeholder="123456789:ABC..." />
+              </div>
+            }
+
+            <div class="text-end mt-4">
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-save me-1"></i>Guardar Preferencias
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+    </div>
+  </div>
+</div>

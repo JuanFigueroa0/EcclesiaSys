@@ -1,34 +1,131 @@
-<div class="page-shell">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <div>
-        <h1 class="page-title">Gestión de roles</h1>
-        <p class="page-subtitle">Administra niveles de acceso y permisos del sistema.</p>
-      </div>
-  
-      <button class="ecclesia-btn">
-        <i class="bi bi-shield-plus me-2"></i>
-        Nuevo rol
-      </button>
+<div class="pg-wrap p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 mb-1 font-weight-bold">Gestión de Roles y Permisos</h1>
+      <p class="text-muted mb-0">Definición de perfiles y matriz de accesos del sistema</p>
     </div>
-  
+    <button class="btn btn-primary" (click)="abrirModalCrear()">
+      <i class="bi bi-shield-plus me-2"></i>Nuevo Rol
+    </button>
+  </div>
+
+  @if (cargando) {
+    <div class="p-5 text-center">
+      <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+      <span class="text-muted">Cargando roles desde la base de datos...</span>
+    </div>
+  } @else {
     <div class="row g-4">
-      @for (item of roles; track item.nombre) {
-        <div class="col-12 col-md-6">
-          <div class="ecclesia-card p-4 h-100">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div>
-                <h2 class="rol-title">{{ item.nombre }}</h2>
-                <p class="rol-desc mb-0">{{ item.descripcion }}</p>
-              </div>
-              <span class="rol-badge">{{ item.permisos }} permisos</span>
+      @for (r of roles; track r.id) {
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm p-4 h-100">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="font-weight-bold text-dark mb-0">
+                <i class="bi bi-shield-lock text-primary me-2"></i>{{ r.nombre }}
+              </h5>
+              @if (r.es_sistema) {
+                <span class="badge bg-primary">Sistema</span>
+              }
             </div>
-  
-            <div class="d-flex gap-2">
-              <button class="btn btn-outline-primary btn-sm">Editar</button>
-              <button class="btn btn-outline-secondary btn-sm">Ver permisos</button>
+            <p class="text-muted small mb-4">{{ r.descripcion }}</p>
+            <div class="mt-auto d-flex justify-content-end">
+              <button class="btn btn-sm btn-outline-primary" (click)="abrirModalEditar(r)">
+                <i class="bi bi-pencil me-1"></i>Editar Rol y Permisos
+              </button>
             </div>
           </div>
         </div>
+      } @empty {
+        <div class="col-12 text-center text-muted py-5">
+          <i class="bi bi-shield-slash fs-1 d-block mb-2 text-secondary"></i>
+          No hay roles registrados en el sistema.
+        </div>
       }
     </div>
+  }
+</div>
+
+<!-- Modal Crear/Editar Rol con Matriz de Permisos -->
+@if (modalCrear) {
+  <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5);" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h5 class="modal-title font-weight-bold">{{ rolEditarId ? 'Editar Rol y Matriz de Permisos' : 'Crear Nuevo Rol' }}</h5>
+          <button type="button" class="btn-close" (click)="cerrarModal()" [disabled]="guardando"></button>
+        </div>
+        <form [formGroup]="rolForm" (ngSubmit)="guardarRol()">
+          <div class="modal-body">
+            @if (mensajeError) {
+              <div class="alert alert-danger border-0 shadow-sm mb-3">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajeError }}
+              </div>
+            }
+
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Nombre del Rol *</label>
+              <input type="text" class="form-control" formControlName="nombre" placeholder="ej. Coordinador de Catequesis" />
+              @if (rolForm.get('nombre')?.invalid && rolForm.get('nombre')?.touched) {
+                <small class="text-danger">El nombre del rol es requerido.</small>
+              }
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label font-weight-bold">Descripción *</label>
+              <textarea class="form-control" rows="2" formControlName="descripcion" placeholder="Describa el alcance y responsabilidades de este rol..."></textarea>
+              @if (rolForm.get('descripcion')?.invalid && rolForm.get('descripcion')?.touched) {
+                <small class="text-danger">La descripción es requerida.</small>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label font-weight-bold d-flex justify-content-between align-items-center">
+                <span>Matriz de Permisos Asignados</span>
+                @if (cargandoPermisosModal) {
+                  <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+                }
+              </label>
+              
+              <div class="p-3 bg-light rounded border" style="max-height: 250px; overflow-y: auto;">
+                @if (permisosDisponibles.length === 0) {
+                  <div class="text-muted small text-center py-2">Cargando catálogo de permisos del sistema...</div>
+                } @else {
+                  <div class="row g-2">
+                    @for (p of permisosDisponibles; track p.id) {
+                      <div class="col-md-6">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            [id]="'permiso_' + p.id"
+                            [checked]="isPermisoChecked(p.id)"
+                            (change)="togglePermiso(p.id, $event)"
+                          />
+                          <label class="form-check-label small" [for]="'permiso_' + p.id">
+                            <strong class="d-block text-dark">{{ p.nombre }}</strong>
+                            <span class="text-muted">{{ p.descripcion || p.codigo }}</span>
+                          </label>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="cerrarModal()" [disabled]="guardando">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="guardando">
+              @if (guardando) {
+                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                Guardando...
+              } @else {
+                <i class="bi bi-save me-1"></i>Guardar Rol y Permisos
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
+}

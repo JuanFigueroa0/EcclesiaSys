@@ -1,0 +1,85 @@
+<div class="pg-wrap p-4">
+  <div class="mb-4">
+    <a routerLink="/app/personas" class="btn btn-link text-decoration-none p-0 mb-2 text-muted">
+      <i class="bi bi-arrow-left me-1"></i> Volver a Personas
+    </a>
+  </div>
+
+  @if (cargando) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2 text-muted">Cargando información...</p>
+    </div>
+  } @else if (persona) {
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center p-4">
+          <div class="avatar-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+            {{ iniciales }}
+          </div>
+          <h4 class="font-weight-bold mb-1">{{ persona.primer_nombre }} {{ persona.segundo_nombre }} {{ persona.primer_apellido }} {{ persona.segundo_apellido }}</h4>
+          <p class="text-muted mb-3">{{ persona.tipo_documento }}: {{ persona.numero_documento }}</p>
+          <span class="badge bg-light text-dark border align-self-center px-3 py-2 text-capitalize">
+            <i class="bi bi-heart me-1"></i> Estado Civil: {{ persona.estado_civil }}
+          </span>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="card border-0 shadow-sm p-4 mb-4">
+          <h5 class="font-weight-bold mb-3"><i class="bi bi-person-lines-fill me-2 text-primary"></i>Datos Personales</h5>
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <span class="text-muted d-block small">Fecha de Nacimiento</span>
+              <span class="fw-bold">{{ persona.fecha_nacimiento || 'No registrada' }}</span>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted d-block small">Lugar de Nacimiento</span>
+              <span class="fw-bold">{{ persona.lugar_nacimiento || 'No registrado' }}</span>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted d-block small">Sexo</span>
+              <span class="fw-bold text-capitalize">{{ persona.sexo || 'No especificado' }}</span>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted d-block small">Cuenta de Usuario Vinculada</span>
+              <span class="fw-bold">{{ persona.tiene_usuario ? 'Sí (Activa)' : 'No vinculada' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm p-4">
+          <h5 class="font-weight-bold mb-3"><i class="bi bi-award me-2 text-primary"></i>Sacramentos Recibidos</h5>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th>Sacramento</th>
+                  <th>Fecha</th>
+                  <th>Parroquia</th>
+                  <th>Registro</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (sac of sacramentosRegistrados; track sac.nombre) {
+                  <tr>
+                    <td class="fw-bold text-primary">{{ sac.nombre }}</td>
+                    <td>{{ sac.fecha }}</td>
+                    <td>{{ sac.parroquia }}</td>
+                    <td class="small text-muted">Libro: {{ sac.libro }} - Folio: {{ sac.folio }}</td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="4" class="text-center text-muted py-3">No hay registros sacramentales guardados.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="alert alert-warning">Persona no encontrada.</div>
+  }
+</div>

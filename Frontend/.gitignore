@@ -42,3 +42,12 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Residuos de Svelte y Migracion (Conservados localmente)
+angular-migration/
+angular-migration-angular-structure/
+.svelte-kit/
+src - svelte.zip
+svelte.config.js
+vite.config.js
+

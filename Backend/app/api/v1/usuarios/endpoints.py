@@ -305,6 +305,27 @@ def eliminar_usuario_admin(
     return UsuarioService.eliminar_usuario(db, usuario_id)
 
 
+# Cambiar estado de usuario (Admin)
+@router.patch(
+    "/admin/{usuario_id}/estado",
+    response_model=MensajeResponse,
+    summary="Cambiar estado de usuario (Admin)"
+)
+def cambiar_estado_usuario_admin(
+    usuario_id: int,
+    estado: str = Query(..., description="Nuevo estado: Activo o Inactivo"),
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(require_permission("usuarios.eliminar"))
+):
+    from app.repositories.usuario import UsuarioRepository
+    usuario = UsuarioRepository.get_by_id(db, usuario_id)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    usuario.estado = estado
+    db.commit()
+    return MensajeResponse(mensaje=f"Estado de usuario actualizado a {estado}")
+
+
 # Validar cambio de correo, necesita token de validación (enviado por correo) para confirmar el cambio de email
 @router.get(
     "/validar-cambio-correo",

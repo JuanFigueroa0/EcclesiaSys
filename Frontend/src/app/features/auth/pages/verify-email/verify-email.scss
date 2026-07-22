@@ -1,3 +1,221 @@
 :host {
     display: block;
+  }.login-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.panel-left {
+  flex: 1;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(26, 58, 92, 0.93) 0%,
+      rgba(15, 37, 64, 0.97) 100%
+    ),
+    url('https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=900')
+      center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.panel-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 30% 50%,
+    rgba(201, 168, 76, 0.13) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.panel-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 3rem;
+  color: #fff;
+}
+
+.panel-cross {
+  font-size: 5rem;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 1.5rem;
+  line-height: 1;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.panel-subtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0;
+}
+
+.panel-divider {
+  width: 60px;
+  height: 2px;
+  background: var(--accent);
+  margin: 1.75rem auto;
+  border-radius: 2px;
+}
+
+.panel-quote {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  max-width: 280px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.panel-right {
+  width: 460px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.07);
+}
+
+.form-container {
+  width: 100%;
+  max-width: 370px;
+  padding: 2.5rem 1.5rem;
+}
+
+.form-cross {
+  font-size: 2.2rem;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.form-title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.25rem;
+}
+
+.form-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+.input-group-text {
+  background: var(--bg-light) !important;
+  border-color: #e2e8f0 !important;
+  color: var(--text-muted) !important;
+  border-right: none !important;
+}
+
+.form-control {
+  border-color: #e2e8f0 !important;
+  border-left: none !important;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form-control:focus {
+  border-color: var(--primary-light) !important;
+  box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.12) !important;
+}
+
+.btn-toggle-pass {
+  border-color: #e2e8f0 !important;
+  border-left: none !important;
+  background: var(--bg-light) !important;
+  color: var(--text-muted) !important;
+}
+
+// Alerta base (estado de error) — usada en reenvío de código y enlace inválido
+.login-alert {
+  background: #fff5f5;
+  border: 1.5px solid #fed7d7;
+  border-radius: var(--radius-sm);
+  color: #c53030;
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+
+  // Variante de éxito — usada cuando el reenvío del correo fue exitoso
+  &--success {
+    background: #f0fff4;
+    border-color: #c6f6d5;
+    color: #2f855a;
   }
+}
+
+.btn-ecclesia {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  width: 100%;
+  transition: all var(--transition);
+  box-shadow: 0 4px 14px rgba(26, 58, 92, 0.25);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+}
+
+// Íconos grandes de estado (éxito/verificando) que aparecen sobre el form-title
+.form-cross + .form-title {
+  margin-top: 0;
+}
+
+@media (max-width: 991px) {
+  .panel-right {
+    width: 100%;
+    min-height: 100vh;
+    box-shadow: none;
+  }
+
+  .form-container {
+    padding: 3rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 2rem 1rem;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+  }
+}

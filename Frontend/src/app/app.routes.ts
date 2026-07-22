@@ -14,7 +14,17 @@ import { UsuariosListComponent } from './features/usuarios/pages/usuarios-list/u
 import { RolesListComponent } from './features/roles/pages/roles-list/roles-list';
 import { SacramentosListComponent } from './features/sacramentos/pages/sacramentos-list/sacramentos-list';
 import { SolicitudesListComponent } from './features/solicitudes/pages/solicitudes-list/solicitudes-list';
+import { PersonasListComponent } from './features/personas/pages/personas-list/personas-list';
+import { PersonaDetailComponent } from './features/personas/pages/persona-detail/persona-detail';
+import { EventosListComponent } from './features/eventos/pages/eventos-list/eventos-list';
+import { NotificacionesListComponent } from './features/notificaciones/pages/notificaciones-list/notificaciones-list';
+import { ConfiguracionComponent } from './features/configuracion/pages/configuracion/configuracion';
+import { CertificadosListComponent } from './features/certificados/pages/certificados-list/certificados-list';
+import { CursosListComponent } from './features/cursos/pages/cursos-list/cursos-list';
+import { PagosListComponent } from './features/pagos/pages/pagos-list/pagos-list';
+import { AuditoriaListComponent } from './features/auditoria/pages/auditoria-list/auditoria-list';
 import { authGuard } from './core/guards/auth-guard';
+import { roleGuard } from './core/guards/role-guard';
 
 export const routes: Routes = [
   {
@@ -41,10 +51,61 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'perfil', component: PerfilComponent },
-      { path: 'usuarios', component: UsuariosListComponent },
-      { path: 'roles', component: RolesListComponent },
-      { path: 'sacramentos', component: SacramentosListComponent },
       { path: 'solicitudes', component: SolicitudesListComponent },
+      { path: 'notificaciones', component: NotificacionesListComponent },
+      { path: 'eventos', component: EventosListComponent },
+      { path: 'certificados', component: CertificadosListComponent },
+      { path: 'cursos', component: CursosListComponent },
+
+      // Rutas administrativas con restricción estricta
+      {
+        path: 'sacramentos',
+        component: SacramentosListComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['Superadmin', 'Administrador Parroquial', 'Secretario', 'Párroco'] },
+      },
+      {
+        path: 'personas',
+        component: PersonasListComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['Superadmin', 'Administrador Parroquial', 'Secretario', 'Párroco'] },
+      },
+      {
+        path: 'personas/:id',
+        component: PersonaDetailComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['Superadmin', 'Administrador Parroquial', 'Secretario', 'Párroco'] },
+      },
+      {
+        path: 'pagos',
+        component: PagosListComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['Superadmin', 'Administrador Parroquial', 'Secretario'] },
+      },
+      {
+        path: 'usuarios',
+        component: UsuariosListComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['Superadmin', 'Administrador Parroquial'] },
+      },
+      {
+        path: 'configuracion',
+        component: ConfiguracionComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['Superadmin', 'Administrador Parroquial'] },
+      },
+      {
+        path: 'roles',
+        component: RolesListComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['Superadmin'] },
+      },
+      {
+        path: 'auditoria',
+        component: AuditoriaListComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['Superadmin'] },
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

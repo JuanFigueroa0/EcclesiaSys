@@ -66,7 +66,7 @@ def get_current_user(
         raise credentials_exception
     
     # Verificar que el usuario esté activo
-    if usuario.estado != 'activo':
+    if usuario.estado and usuario.estado.lower() != 'activo':
         # Revocar sesión si el usuario no está activo
         SesionRepository.revocar_sesion(db, sesion, "Usuario inactivo")
         raise HTTPException(
@@ -98,10 +98,8 @@ def get_current_user_with_profile(
     if not current_user.perfil_completo:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Debes completar tu perfil antes de realizar esta acción. "
-                   "Ve a tu perfil y completa tus datos personales."
+            detail="Debes completar tu perfil de usuario antes de radicar solicitudes."
         )
-    
     return current_user
 
 

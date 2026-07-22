@@ -1,0 +1,102 @@
+<div class="pg-wrap p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 mb-1 font-weight-bold">Cursos de Catequesis</h1>
+      <p class="text-muted mb-0">Oferta de cursos pre-sacramentales e información de inscripciones</p>
+    </div>
+
+    @if (esAdmin) {
+      <button class="btn btn-primary" (click)="abrirModal()">
+        <i class="bi bi-plus-lg me-2"></i>Nuevo Curso
+      </button>
+    }
+  </div>
+
+  <div class="row g-4">
+    @for (c of cursos; track c.id) {
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100 p-3">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="badge bg-light text-dark border">{{ c.sacramento }}</span>
+            <span class="badge" [class.bg-success]="c.estado === 'en_curso'" [class.bg-info]="c.estado === 'abierto'" [class.bg-secondary]="c.estado === 'finalizado'">
+              {{ c.estado }}
+            </span>
+          </div>
+          <h5 class="font-weight-bold text-dark mb-2">{{ c.nombre }}</h5>
+          <p class="text-muted small mb-3">
+            <i class="bi bi-person me-1"></i>Catequista: <strong>{{ c.catequista }}</strong>
+          </p>
+          <div class="mt-auto border-top pt-3 d-flex justify-content-between align-items-center">
+            <span class="small text-muted">Inscritos: <strong>{{ c.inscritos || 0 }}</strong></span>
+            <span class="small text-muted">{{ c.fecha_inicio }}</span>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="col-12 text-center text-muted py-5">
+        <i class="bi bi-mortarboard fs-1 d-block mb-2 text-secondary"></i>
+        No hay cursos de catequesis programados.
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Modal Nuevo Curso (Solo Admin) -->
+@if (modalCrear && esAdmin) {
+  <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5);" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h5 class="modal-title font-weight-bold">Apertura de Curso Catequético</h5>
+          <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+        </div>
+        <form [formGroup]="cursoForm" (ngSubmit)="guardar()">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Nombre del Curso *</label>
+              <input type="text" class="form-control" formControlName="nombre" placeholder="ej. Catequesis Primera Comunión Grupo A" />
+              @if (cursoForm.get('nombre')?.invalid && cursoForm.get('nombre')?.touched) {
+                <small class="text-danger">El nombre es requerido.</small>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Sacramento *</label>
+              <select class="form-select" formControlName="sacramento">
+                <option value="Bautismo">Bautismo</option>
+                <option value="Confirmación">Confirmación</option>
+                <option value="Primera Comunión">Primera Comunión</option>
+                <option value="Matrimonio">Matrimonio</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Catequista Encargado *</label>
+              <input type="text" class="form-control" formControlName="catequista" placeholder="ej. Pbro. Juan / Hermana María" />
+              @if (cursoForm.get('catequista')?.invalid && cursoForm.get('catequista')?.touched) {
+                <small class="text-danger">El catequista es requerido.</small>
+              }
+            </div>
+
+            <div class="row g-2">
+              <div class="col-md-6">
+                <label class="form-label font-weight-bold">Fecha Inicio *</label>
+                <input type="date" class="form-control" formControlName="fecha_inicio" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label font-weight-bold">Fecha Fin *</label>
+                <input type="date" class="form-control" formControlName="fecha_fin" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="cerrarModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save me-1"></i>Crear Curso
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

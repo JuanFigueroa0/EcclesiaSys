@@ -1,120 +1,139 @@
 <div class="page-shell">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-      <div>
-        <h1 class="page-title">Panel administrativo</h1>
-        <p class="page-subtitle">
-          Vista general de la gestión parroquial y el estado del sistema.
-        </p>
-      </div>
-  
-      <button class="ecclesia-btn">
-        <i class="bi bi-plus-circle me-2"></i>
-        Nueva solicitud
-      </button>
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">{{ esAdmin ? 'Panel de Control General' : 'Mi Panel Parroquial' }}</h1>
+      <p class="page-subtitle">
+        {{ esAdmin ? 'Vista general de la gestión parroquial y estado del sistema.' : 'Resumen de tus trámites, certificados y accesos rápidos.' }}
+      </p>
     </div>
-  
-    <div class="row g-4 mb-4">
-      @for (item of stats; track item.title) {
-        <div class="col-12 col-sm-6 col-xl-3">
-          <div class="ecclesia-card stat-card p-4 h-100">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <div class="stat-label">{{ item.title }}</div>
-                <div class="stat-value">{{ item.value }}</div>
-              </div>
-  
-              <div class="stat-icon" [ngClass]="'stat-icon--' + item.color">
-                <i class="bi" [ngClass]="item.icon"></i>
-              </div>
+
+    <a routerLink="/app/solicitudes" class="btn btn-primary shadow-sm font-weight-bold">
+      <i class="bi bi-plus-circle me-2"></i>Nueva Solicitud
+    </a>
+  </div>
+
+  <div class="row g-4 mb-4">
+    @for (item of stats; track item.title) {
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ecclesia-card stat-card p-4 h-100 shadow-sm border-0">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="stat-label text-muted small font-weight-bold text-uppercase">{{ item.title }}</div>
+              <div class="stat-value fs-2 font-weight-bold mt-1">{{ item.value }}</div>
+            </div>
+
+            <div class="stat-icon p-3 rounded-circle" [ngClass]="'stat-icon--' + item.color">
+              <i class="bi fs-4" [ngClass]="item.icon"></i>
             </div>
           </div>
         </div>
-      }
-    </div>
-  
-    <div class="row g-4">
-      <div class="col-12 col-xl-8">
-        <div class="ecclesia-card p-4">
-          <div class="section-head mb-3">
-            <h2>Solicitudes recientes</h2>
-            <span>Últimos movimientos registrados</span>
-          </div>
-  
-          <div class="table-responsive">
-            <table class="table align-middle ecclesia-table mb-0">
-              <thead>
+      </div>
+    }
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12 col-xl-8">
+      <div class="ecclesia-card p-4 shadow-sm border-0">
+        <div class="section-head mb-3">
+          <h2 class="h5 font-weight-bold mb-1">{{ esAdmin ? 'Solicitudes Recientes en la Parroquia' : 'Mis Solicitudes Recientes' }}</h2>
+          <span class="text-muted small">Últimos trámites y movimientos registrados</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table align-middle ecclesia-table mb-0">
+            <thead>
+              <tr class="bg-light">
+                <th>Fiel / Persona</th>
+                <th>Sacramento</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (req of recentRequests; track req.id || req.fiel + req.fecha) {
                 <tr>
-                  <th>Fiel</th>
-                  <th>Tipo</th>
-                  <th>Estado</th>
-                  <th>Fecha</th>
+                  <td class="font-weight-bold">{{ req.fiel || req.nombre || 'Trámite' }}</td>
+                  <td><span class="badge bg-light text-dark border">{{ req.sacramento || req.tipo || 'Sacramento' }}</span></td>
+                  <td>
+                    <span class="badge" [ngClass]="{
+                      'bg-warning text-dark': req.estado === 'Pendiente' || req.estado === 'pendiente',
+                      'bg-success': req.estado === 'Aprobada' || req.estado === 'aprobada',
+                      'bg-danger': req.estado === 'Rechazada' || req.estado === 'rechazada',
+                      'bg-info text-dark': req.estado === 'en_revision'
+                    }">
+                      {{ req.estado }}
+                    </span>
+                  </td>
+                  <td class="text-muted small">{{ req.fecha }}</td>
                 </tr>
-              </thead>
-              <tbody>
-                @for (req of recentRequests; track req.nombre + req.fecha) {
-                  <tr>
-                    <td>{{ req.nombre }}</td>
-                    <td>{{ req.tipo }}</td>
-                    <td>
-                      <span class="status-pill" [ngClass]="{
-                        'status-pill--pending': req.estado === 'Pendiente',
-                        'status-pill--success': req.estado === 'Aprobada',
-                        'status-pill--review': req.estado === 'En revisión'
-                      }">
-                        {{ req.estado }}
-                      </span>
-                    </td>
-                    <td>{{ req.fecha }}</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="text-center text-muted py-4">
+                    <i class="bi bi-inbox fs-2 d-block mb-1"></i>
+                    No hay solicitudes recientes para mostrar.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
       </div>
-  
-      <div class="col-12 col-xl-4">
-        <div class="ecclesia-card p-4 mb-4">
-          <div class="section-head mb-3">
-            <h2>Accesos rápidos</h2>
-            <span>Módulos principales</span>
-          </div>
-  
-          <div class="quick-links">
-            <a routerLink="/app/usuarios" class="quick-link">
-              <i class="bi bi-people-fill"></i>
-              <span>Gestión de usuarios</span>
-            </a>
-  
-            <a routerLink="/app/roles" class="quick-link">
-              <i class="bi bi-shield-lock-fill"></i>
-              <span>Roles y permisos</span>
-            </a>
-  
-            <a routerLink="/app/sacramentos" class="quick-link">
-              <i class="bi bi-journal-bookmark-fill"></i>
-              <span>Sacramentos</span>
-            </a>
-  
-            <a routerLink="/app/solicitudes" class="quick-link">
-              <i class="bi bi-file-earmark-medical-fill"></i>
-              <span>Solicitudes</span>
-            </a>
-          </div>
+    </div>
+
+    <div class="col-12 col-xl-4">
+      <div class="ecclesia-card p-4 mb-4 shadow-sm border-0">
+        <div class="section-head mb-3">
+          <h2 class="h5 font-weight-bold mb-1">Accesos Rápidos</h2>
+          <span class="text-muted small">Módulos principales del sistema</span>
         </div>
-  
-        <div class="ecclesia-card p-4">
-          <div class="section-head mb-3">
-            <h2>Resumen</h2>
-            <span>Estado del día</span>
-          </div>
-  
-          <ul class="summary-list">
-            <li><strong>12</strong> solicitudes pendientes de revisión.</li>
-            <li><strong>4</strong> sacramentos con requisitos actualizados.</li>
-            <li><strong>2</strong> usuarios nuevos registrados esta semana.</li>
-          </ul>
+
+        <div class="quick-links d-flex flex-column gap-2">
+          <a routerLink="/app/solicitudes" class="btn btn-outline-primary text-start d-flex align-items-center gap-2 p-2">
+            <i class="bi bi-file-earmark-medical-fill fs-5"></i>
+            <span>{{ esAdmin ? 'Gestión de Solicitudes' : 'Mis Solicitudes Sacramentales' }}</span>
+          </a>
+
+          <a routerLink="/app/certificados" class="btn btn-outline-success text-start d-flex align-items-center gap-2 p-2">
+            <i class="bi bi-patch-check-fill fs-5"></i>
+            <span>{{ esAdmin ? 'Certificados y Fe de Bautismo' : 'Mis Certificados Emitidos' }}</span>
+          </a>
+
+          <a routerLink="/app/eventos" class="btn btn-outline-info text-start d-flex align-items-center gap-2 p-2">
+            <i class="bi bi-calendar-event-fill fs-5"></i>
+            <span>{{ esAdmin ? 'Programar Eventos' : 'Cartelera de Eventos Parroquiales' }}</span>
+          </a>
+
+          <a routerLink="/app/cursos" class="btn btn-outline-secondary text-start d-flex align-items-center gap-2 p-2">
+            <i class="bi bi-mortarboard-fill fs-5"></i>
+            <span>Cursos de Catequesis</span>
+          </a>
+
+          @if (esAdmin) {
+            <a routerLink="/app/personas" class="btn btn-outline-warning text-start d-flex align-items-center gap-2 p-2">
+              <i class="bi bi-people-fill fs-5"></i>
+              <span>Directorio de Personas</span>
+            </a>
+
+            <a routerLink="/app/usuarios" class="btn btn-outline-danger text-start d-flex align-items-center gap-2 p-2">
+              <i class="bi bi-shield-lock-fill fs-5"></i>
+              <span>Gestión de Usuarios</span>
+            </a>
+          }
         </div>
+      </div>
+
+      <div class="ecclesia-card p-4 shadow-sm border-0">
+        <div class="section-head mb-3">
+          <h2 class="h5 font-weight-bold mb-1">Información de Usuario</h2>
+          <span class="text-muted small">Estado de la cuenta activa</span>
+        </div>
+
+        <ul class="list-unstyled mb-0 small text-muted">
+          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Sesión activa correctamente.</li>
+          <li class="mb-2"><i class="bi bi-person-badge text-primary me-2"></i>Rol: <strong>{{ session?.roles?.[0] || 'Usuario Fiel' }}</strong></li>
+          <li><i class="bi bi-shield-check text-success me-2"></i>Conexión segura al servidor parroquial.</li>
+        </ul>
       </div>
     </div>
   </div>
+</div>

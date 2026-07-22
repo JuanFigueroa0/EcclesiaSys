@@ -73,3 +73,14 @@ Backend/app/model.txt
 # JUPYTER
 # ============================================
 .ipynb_checkpoints/
+
+# ============================================
+# SVELTE Y MIGRACION (CONSERVADOS LOCALMENTE)
+# ============================================
+Frontend.svelte/
+Frontend/angular-migration/
+Frontend/angular-migration-angular-structure/
+Frontend/.svelte-kit/
+Frontend/src - svelte.zip
+Frontend/svelte.config.js
+Frontend/vite.config.js

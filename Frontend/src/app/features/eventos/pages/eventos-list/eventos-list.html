@@ -1,0 +1,161 @@
+<div class="pg-wrap p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 mb-1 font-weight-bold">Agenda Parroquial</h1>
+      <p class="text-muted mb-0">{{ eventosFiltrados.length }} eventos programados en la parroquia</p>
+    </div>
+
+    @if (esAdmin) {
+      <button class="btn btn-primary" (click)="abrirModal()">
+        <i class="bi bi-plus-circle me-2"></i>Nuevo Evento
+      </button>
+    }
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <select class="form-select" [(ngModel)]="filtroEstado">
+        <option value="">Todos los estados</option>
+        <option value="borrador">Borrador</option>
+        <option value="publicado">Publicado</option>
+        <option value="cerrado">Cerrado</option>
+        <option value="finalizado">Finalizado</option>
+        <option value="cancelado">Cancelado</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" [(ngModel)]="filtroTipo">
+        <option value="">Todos los tipos</option>
+        <option value="misa">Misa</option>
+        <option value="retiro">Retiro Espiritual</option>
+        <option value="curso">Curso / Catequesis</option>
+        <option value="reunion">Reunión</option>
+        <option value="celebracion">Celebración</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th>Evento</th>
+            <th>Tipo</th>
+            <th>Fecha / Hora</th>
+            <th>Lugar</th>
+            <th>Cupos</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ev of eventosFiltrados; track ev.id) {
+            <tr>
+              <td class="fw-bold">{{ ev.titulo }}</td>
+              <td>
+                <span class="badge bg-light text-dark border">
+                  <i class="bi {{ getTipoIcon(ev.tipo) }} me-1"></i> {{ ev.tipo }}
+                </span>
+              </td>
+              <td class="text-muted small">{{ ev.fecha }} · {{ ev.hora }}</td>
+              <td class="text-muted small">{{ ev.lugar }}</td>
+              <td>
+                <div class="progress mb-1" style="height: 6px; width: 100px;">
+                  <div class="progress-bar bg-primary" [style.width.%]="(ev.inscritos / ev.cupo) * 100"></div>
+                </div>
+                <span class="small text-muted">{{ ev.inscritos }} / {{ ev.cupo }}</span>
+              </td>
+              <td>
+                <span class="badge {{ getBadgeClass(ev.estado) }}">{{ ev.estado }}</span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="text-center text-muted py-5">
+                <i class="bi bi-calendar-event fs-1 d-block mb-2 text-secondary"></i>
+                No hay eventos parroquiales programados.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Crear Evento (Solo Admin) -->
+@if (modalCrear && esAdmin) {
+  <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5);" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h5 class="modal-title font-weight-bold">Programar Nuevo Evento</h5>
+          <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+        </div>
+        <form [formGroup]="eventoForm" (ngSubmit)="guardarEvento()">
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label font-weight-bold">Título del Evento *</label>
+                <input type="text" class="form-control" formControlName="titulo" placeholder="ej. Misa de San José" />
+                @if (eventoForm.get('titulo')?.invalid && eventoForm.get('titulo')?.touched) {
+                  <small class="text-danger">El título es requerido.</small>
+                }
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label font-weight-bold">Tipo *</label>
+                <select class="form-select" formControlName="tipo">
+                  <option value="misa">Misa</option>
+                  <option value="retiro">Retiro Espiritual</option>
+                  <option value="curso">Curso / Catequesis</option>
+                  <option value="reunion">Reunión</option>
+                  <option value="celebracion">Celebración</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label font-weight-bold">Fecha *</label>
+                <input type="date" class="form-control" formControlName="fecha" />
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label font-weight-bold">Hora *</label>
+                <input type="time" class="form-control" formControlName="hora" />
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label font-weight-bold">Cupo Máximo *</label>
+                <input type="number" class="form-control" formControlName="cupo" />
+              </div>
+
+              <div class="col-md-8">
+                <label class="form-label font-weight-bold">Lugar *</label>
+                <input type="text" class="form-control" formControlName="lugar" placeholder="ej. Templo Principal, Salón Parroquial" />
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label font-weight-bold">Estado Inicial *</label>
+                <select class="form-select" formControlName="estado">
+                  <option value="borrador">Borrador</option>
+                  <option value="publicado">Publicado</option>
+                </select>
+              </div>
+
+              <div class="col-md-12">
+                <label class="form-label font-weight-bold">Descripción u Observaciones</label>
+                <textarea class="form-control" rows="3" formControlName="descripcion"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="cerrarModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save me-1"></i>Guardar Evento
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

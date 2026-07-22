@@ -1,0 +1,116 @@
+<div class="pg-wrap p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 mb-1 font-weight-bold">{{ esAdmin ? 'Gestión de Certificados' : 'Mis Certificados Emitidos' }}</h1>
+      <p class="text-muted mb-0">
+        {{ esAdmin ? 'Emisión y descarga de partidas oficiales sacramentales' : 'Consulta y descarga de tus certificados oficiales en PDF' }}
+      </p>
+    </div>
+
+    @if (esAdmin) {
+      <button class="btn btn-primary" (click)="abrirModal()">
+        <i class="bi bi-file-earmark-plus me-2"></i>Emitir Certificado
+      </button>
+    }
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="input-group">
+        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+        <input type="text" class="form-control border-start-0" placeholder="Buscar por código o nombre..." [(ngModel)]="busqueda" />
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th>Código</th>
+            <th>Sacramento</th>
+            <th>Nombre Titular</th>
+            <th>Solicitado por</th>
+            <th>Fecha Emisión</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of filtrados; track c.id) {
+            <tr>
+              <td class="fw-bold text-primary">{{ c.codigo }}</td>
+              <td class="text-capitalize">
+                <span class="badge bg-light text-dark border">{{ c.tipo }}</span>
+              </td>
+              <td class="fw-bold">{{ c.persona_nombre }}</td>
+              <td class="text-muted">{{ c.solicitante }}</td>
+              <td class="text-muted small">{{ c.fecha_emision }}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-success" (click)="descargar(c)">
+                  <i class="bi bi-download me-1"></i>Descargar PDF
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="text-center text-muted py-5">
+                <i class="bi bi-patch-check fs-1 d-block mb-2 text-secondary"></i>
+                No tienes certificados emitidos a tu nombre.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Generar Certificado (Solo Admin) -->
+@if (modalGenerar && esAdmin) {
+  <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5);" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h5 class="modal-title font-weight-bold">Emitir Certificado Sacramental</h5>
+          <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+        </div>
+        <form [formGroup]="certForm" (ngSubmit)="generar()">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Tipo de Sacramento *</label>
+              <select class="form-select" formControlName="tipo">
+                <option value="bautismo">Bautismo</option>
+                <option value="confirmacion">Confirmación</option>
+                <option value="matrimonio">Matrimonio</option>
+                <option value="primera_comunion">Primera Comunión</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Nombre Completo del Titular *</label>
+              <input type="text" class="form-control" formControlName="persona_nombre" placeholder="ej. Juan García Martínez" />
+              @if (certForm.get('persona_nombre')?.invalid && certForm.get('persona_nombre')?.touched) {
+                <small class="text-danger">El nombre del titular es requerido.</small>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label font-weight-bold">Nombre del Solicitante *</label>
+              <input type="text" class="form-control" formControlName="solicitante" placeholder="ej. Padre, Interesado o Apoderado" />
+              @if (certForm.get('solicitante')?.invalid && certForm.get('solicitante')?.touched) {
+                <small class="text-danger">El solicitante es requerido.</small>
+              }
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="cerrarModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-patch-check me-1"></i>Generar Certificado
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

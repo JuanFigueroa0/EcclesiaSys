@@ -54,10 +54,11 @@ def check_permission(db: Session, usuario_id: int, codigo_permiso: str) -> bool:
     Verifica si un usuario tiene un permiso específico.
     Considera tanto permisos por rol como permisos directos.
     """
-    # Superadmin bypass
+    # Superadmin y Admin bypass
     roles_usuario  = UsuarioRolRepository.get_roles_usuario(db, usuario_id)
-    nombres_roles  = [rol.nombre for rol in roles_usuario]
-    if 'Superadmin' in nombres_roles:
+    nombres_roles  = [rol.nombre.lower() for rol in roles_usuario if hasattr(rol, 'nombre')]
+    roles_bypass   = ["superadmin", "administrador parroquial", "párroco", "parroco", "admin"]
+    if any(any(b in r for r in nombres_roles) for b in roles_bypass):
         return True
 
     # Verificar en permisos efectivos combinados
@@ -74,7 +75,7 @@ class RequirePermissions:
         self,
         permisos: List[str],
         require_all: bool = False,
-        allow_superadmin_bypass: bool = False
+        allow_superadmin_bypass: bool = True
     ):
         self.permisos              = permisos
         self.require_all           = require_all
@@ -86,11 +87,12 @@ class RequirePermissions:
         current_user: Usuario = Depends(get_current_active_user)
     ) -> Usuario:
 
-        # Superadmin bypass
+        # Superadmin / Admin bypass
         if self.allow_superadmin_bypass:
             roles_usuario = UsuarioRolRepository.get_roles_usuario(db, current_user.id)
-            nombres_roles = [rol.nombre for rol in roles_usuario]
-            if 'Superadmin' in nombres_roles:
+            nombres_roles = [rol.nombre.lower() for rol in roles_usuario if hasattr(rol, 'nombre')]
+            roles_bypass   = ["superadmin", "administrador parroquial", "párroco", "parroco", "admin"]
+            if any(any(b in r for r in nombres_roles) for b in roles_bypass):
                 return current_user
 
         # Obtener todos los permisos efectivos del usuario

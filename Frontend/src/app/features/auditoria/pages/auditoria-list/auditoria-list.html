@@ -1,0 +1,64 @@
+<div class="pg-wrap p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 mb-1 font-weight-bold">Bitácora de Auditoría y Analítica</h1>
+      <p class="text-muted mb-0">Registro inmutable de actividades, trazabilidad e informes Power BI</p>
+    </div>
+  </div>
+
+  <!-- Panel PowerBI Embed de Svelte -->
+  <div class="card border-0 shadow-sm mb-4 p-3 bg-light">
+    <div class="d-flex align-items-center mb-3">
+      <i class="bi bi-graph-up-arrow fs-4 text-primary me-2"></i>
+      <div>
+        <h5 class="mb-0 font-weight-bold">Informe de Actividad y Métricas Parroquiales</h5>
+        <span class="text-muted small">Panel analítico interactivo en tiempo real</span>
+      </div>
+    </div>
+    <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm" style="max-height: 420px;">
+      <iframe title="PowerBI Report Auditoria" [src]="powerBiUrl" allowFullScreen="true" frameborder="0"></iframe>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="input-group">
+        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+        <input type="text" class="form-control border-start-0" placeholder="Buscar por usuario, módulo o acción..." [(ngModel)]="busqueda" />
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th>Fecha / Hora</th>
+            <th>Usuario</th>
+            <th>Módulo</th>
+            <th>Acción</th>
+            <th>Detalle</th>
+            <th>Dirección IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (l of filtrados; track l.id) {
+            <tr>
+              <td class="text-muted small font-monospace">{{ l.fecha }}</td>
+              <td class="fw-bold">{{ l.usuario }}</td>
+              <td><span class="badge bg-light text-dark border">{{ l.modulo }}</span></td>
+              <td><span class="badge {{ getBadgeClass(l.accion) }}">{{ l.accion }}</span></td>
+              <td class="small">{{ l.detalle }}</td>
+              <td class="text-muted small font-monospace">{{ l.ip }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">No hay registros de auditoría.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

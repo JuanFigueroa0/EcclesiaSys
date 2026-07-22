@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -11,10 +12,20 @@ export class SacramentosService {
   private apiUrl = environment.apiUrl;
 
   getAll(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/sacramentos`);
+    return this.http.get<any[]>(`${this.apiUrl}/sacramentos/`).pipe(
+      catchError((err) => {
+        console.warn('Error backend sacramentos:', err);
+        return of([]);
+      })
+    );
   }
 
   getById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/sacramentos/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/sacramentos/${id}`).pipe(
+      catchError((err) => {
+        console.warn(`Error backend sacramento ${id}:`, err);
+        return of(undefined);
+      })
+    );
   }
 }

@@ -15,6 +15,9 @@ import {
 
 import { TokenService } from '../../../core/services/token';
 import { PerfilService } from '../../perfil/services/perfil.service';
+import { VerifyEmailRequest } from '../models/verify-email-request.model';
+import { ResendVerificationRequest } from '../models/resend-verification-request.model';
+import { VerifyEmailResponse } from '../models/verify-email-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -53,6 +56,62 @@ export class AuthService {
       `${this.apiUrl}/auth/reactivar-cuenta`,
       { correo }
     );
+  }
+
+/**
+   * Verificación de correo (link automático desde el correo)
+   */
+  verifyEmail(
+    token: string,
+    correo?: string,
+    tipo?: string
+  ): Observable<VerifyEmailResponse> {
+
+    let url = `${this.apiUrl}/auth/validar-email?token=${encodeURIComponent(token)}`;
+
+    if (correo) {
+      url += `&correo=${encodeURIComponent(correo)}`;
+    }
+
+    if (tipo) {
+      url += `&tipo=${encodeURIComponent(tipo)}`;
+    }
+
+    return this.http.get<VerifyEmailResponse>(url);
+  }
+
+  /**
+   * Verificación manual (usuario pega el código/token)
+   */
+  verifyEmailManual(
+    request: VerifyEmailRequest
+  ): Observable<VerifyEmailResponse> {
+
+    return this.http.post<VerifyEmailResponse>(
+      `${this.apiUrl}/auth/validar-email`,
+      request
+    );
+  }
+
+  /**
+   * Reenviar correo de verificación
+   */
+  resendVerificationEmail(
+    request: ResendVerificationRequest
+  ): Observable<VerifyEmailResponse> {
+
+    return this.http.post<VerifyEmailResponse>(
+      `${this.apiUrl}/auth/reenviar-validacion`,
+      request
+    );
+  }
+
+  recuperarContrasena(correo: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/recuperar-contrasena`, { correo });
+  }
+
+  restablecerContrasena(token: string, contrasena_nueva: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/reset-password`, { token, contrasena_nueva });
   }
 
   logout(): void {

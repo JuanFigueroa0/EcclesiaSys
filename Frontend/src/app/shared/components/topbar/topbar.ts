@@ -1,13 +1,14 @@
 import { Component, EventEmitter, Output, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { PerfilService } from '../../../features/perfil/services/perfil.service';
 import { TokenService } from '../../../core/services/token';
+import { NotificacionesService } from '../../../features/notificaciones/services/notificaciones.service';
 
 @Component({
   selector: 'app-topbar',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './topbar.html',
   styleUrl: './topbar.scss',
 })
@@ -19,11 +20,13 @@ export class TopbarComponent implements OnInit {
   private authService = inject(AuthService);
   private perfilService = inject(PerfilService);
   private tokenService = inject(TokenService);
+  private notifService = inject(NotificacionesService);
   private router = inject(Router);
 
   session = this.tokenService.getUserData();
   perfil: any = null;
   usuario: any = null;
+  unreadNotifCount = 0;
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId) || !this.tokenService.isLoggedIn()) {
@@ -46,6 +49,23 @@ export class TopbarComponent implements OnInit {
       },
       error: (err) => console.error('Error cargando usuario en topbar:', err),
     });
+
+    this.cargarNotificaciones();
+  }
+
+  cargarNotificaciones(): void {
+    this.notifService.getNotificaciones().subscribe({
+      next: (list) => {
+        if (Array.isArray(list)) {
+          this.unreadNotifCount = list.filter((n) => !n.leida).length;
+        }
+      },
+      error: () => (this.unreadNotifCount = 0),
+    });
+  }
+
+  irANotificaciones(): void {
+    this.router.navigate(['/app/notificaciones']);
   }
 
   get fullName(): string {

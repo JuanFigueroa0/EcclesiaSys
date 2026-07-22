@@ -1,4 +1,203 @@
-<div class="p-4">
-    <h2>Verificación de correo</h2>
-    <p>Pantalla en construcción.</p>
-  </div>
+<div class="login-wrapper">
+  <section class="panel-left d-none d-lg-flex">
+    <div class="panel-content">
+      <span class="panel-cross">✝</span>
+      <h1 class="panel-title">EcclesiaSys</h1>
+      <p class="panel-subtitle">Sistema de gestión parroquial</p>
+      <div class="panel-divider"></div>
+      <p class="panel-quote">
+        “{{ esReactivacion()
+          ? 'Bienvenido de nuevo a nuestra comunidad'
+          : 'Verificando tu identidad digital' }}”
+      </p>
+    </div>
+  </section>
+
+  <section class="panel-right">
+    <div class="form-container">
+
+      @if (estado() === 'verificando') {
+        <div class="text-center py-5">
+          <span class="spinner-border text-primary mb-3" style="width:3rem;height:3rem;"></span>
+          <p class="text-muted">
+            {{ esReactivacion() ? 'Reactivando tu cuenta...' : 'Verificando tu correo electrónico...' }}
+          </p>
+        </div>
+      } @else if (estado() === 'exito') {
+        <div class="mb-4 text-center">
+          <span class="form-cross">✝</span>
+          <h2 class="form-title">
+            {{ esReactivacion() ? '¡Cuenta reactivada!' : '¡Correo verificado!' }}
+          </h2>
+          <p class="form-subtitle">{{ mensaje() }}</p>
+        </div>
+
+        @if (esReactivacion()) {
+          <p class="text-center text-muted small mb-4">
+            Ahora puedes iniciar sesión. Si no recuerdas tu contraseña, usa la
+            opción <strong>"Olvidé mi contraseña"</strong>.
+          </p>
+          <div class="d-flex flex-column gap-2">
+            <a routerLink="/auth/login" class="btn-ecclesia text-center">
+              <i class="bi bi-box-arrow-in-right me-2"></i>
+              Iniciar sesión
+            </a>
+            <a routerLink="/auth/forgot-password" class="small fw-semibold text-center">
+              Olvidé mi contraseña
+            </a>
+          </div>
+        } @else {
+          <p class="text-center text-muted small mb-4">
+            Tu cuenta está activa. Ya puedes acceder al sistema.
+          </p>
+          <a routerLink="/auth/login" class="btn-ecclesia d-block text-center">
+            <i class="bi bi-box-arrow-in-right me-2"></i>
+            Iniciar sesión
+          </a>
+        }
+      } @else if (estado() === 'error') {
+        <div class="mb-4 text-center">
+          <span class="form-cross">✝</span>
+          <h2 class="form-title">Enlace inválido</h2>
+          <p class="form-subtitle">{{ error() }}</p>
+        </div>
+        <p class="text-center text-muted small mb-4">
+          El enlace puede haber expirado o ya fue utilizado. Solicita uno nuevo
+          ingresando tu correo.
+        </p>
+
+        <form [formGroup]="resendForm" (ngSubmit)="onReenviar()">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Tu correo electrónico</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-envelope"></i>
+              </span>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="correo"
+                placeholder="correo@parroquia.com"
+              />
+            </div>
+          </div>
+
+          @if (errorReenvio()) {
+            <div class="login-alert">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <span>{{ errorReenvio() }}</span>
+            </div>
+          }
+          @if (exitoReenvio()) {
+            <div class="login-alert login-alert--success">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>{{ exitoReenvio() }}</span>
+            </div>
+          }
+
+          <button type="submit" class="btn-ecclesia" [disabled]="cargandoReenvio()">
+            @if (!cargandoReenvio()) {
+              <span>Reenviar correo de verificación</span>
+            } @else {
+              <span class="d-inline-flex align-items-center gap-2">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Enviando...</span>
+              </span>
+            }
+          </button>
+        </form>
+      } @else if (estado() === 'manual') {
+        <div class="mb-4">
+          <span class="form-cross">✝</span>
+          <h2 class="form-title">Verificar correo</h2>
+          <p class="form-subtitle">Ingresa el código que recibiste por correo</p>
+        </div>
+
+        @if (error()) {
+          <div class="login-alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>{{ error() }}</span>
+          </div>
+        }
+
+        <form [formGroup]="manualForm" (ngSubmit)="onSubmitManual()">
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Código de verificación</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-key"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="token"
+                placeholder="Pega aquí tu código"
+              />
+            </div>
+          </div>
+          <button type="submit" class="btn-ecclesia" [disabled]="cargandoManual()">
+            @if (!cargandoManual()) {
+              <span>Verificar correo</span>
+            } @else {
+              <span class="d-inline-flex align-items-center gap-2">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Verificando...</span>
+              </span>
+            }
+          </button>
+        </form>
+
+        <hr class="my-4" />
+        <p class="text-center text-muted small mb-3">¿No recibiste el correo?</p>
+
+        <form [formGroup]="resendForm" (ngSubmit)="onReenviar()">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Tu correo electrónico</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-envelope"></i>
+              </span>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="correo"
+                placeholder="ejemplo@gmail.com"
+              />
+            </div>
+          </div>
+
+          @if (errorReenvio()) {
+            <div class="login-alert">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <span>{{ errorReenvio() }}</span>
+            </div>
+          }
+          @if (exitoReenvio()) {
+            <div class="login-alert login-alert--success">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>{{ exitoReenvio() }}</span>
+            </div>
+          }
+
+          <button type="submit" class="btn-ecclesia" [disabled]="cargandoReenvio()">
+            @if (!cargandoReenvio()) {
+              <span>Reenviar correo de verificación</span>
+            } @else {
+              <span class="d-inline-flex align-items-center gap-2">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Enviando...</span>
+              </span>
+            }
+          </button>
+        </form>
+      }
+
+      <div class="text-center mt-4">
+        <a routerLink="/auth/login" class="small fw-semibold">
+          <i class="bi bi-arrow-left me-1"></i>
+          Volver al inicio de sesión
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
