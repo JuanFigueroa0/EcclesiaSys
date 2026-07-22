@@ -250,6 +250,9 @@ class SolicitudSacramentoListItem(BaseModel):
     """Versión reducida para listar solicitudes (tabla/listado)."""
     id: int
     sacramento_id: int
+    sacramento_nombre: Optional[str] = None
+    usuario_correo: Optional[str] = None
+    persona_nombre: Optional[str] = None
     estado: str
     requiere_validacion_manual: bool
     fecha_preferida: Optional[date] = None

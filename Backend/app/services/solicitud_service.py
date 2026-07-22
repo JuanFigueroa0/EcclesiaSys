@@ -233,6 +233,43 @@ def crear_solicitud(
 # LISTAR SOLICITUDES
 # ─────────────────────────────────────────────
 
+def _format_solicitud_list_item(s: SolicitudSacramento) -> dict:
+    sacramento_nom = s.sacramento.nombre if hasattr(s, 'sacramento') and s.sacramento else f"Sacramento #{s.sacramento_id}"
+    usuario_email = s.usuario_solicitante.correo if hasattr(s, 'usuario_solicitante') and s.usuario_solicitante else None
+
+    persona_nom = None
+    if hasattr(s, 'personas') and s.personas:
+        for p in s.personas:
+            if hasattr(p, 'datos_digitados') and p.datos_digitados and isinstance(p.datos_digitados, dict):
+                pn = p.datos_digitados.get('primer_nombre') or p.datos_digitados.get('nombres') or ''
+                pa = p.datos_digitados.get('primer_apellido') or p.datos_digitados.get('apellidos') or ''
+                if pn or pa:
+                    persona_nom = f"{pn} {pa}".strip()
+                    break
+            if not persona_nom and hasattr(p, 'persona') and p.persona:
+                persona_nom = f"{p.persona.nombres} {p.persona.apellidos}".strip()
+                break
+
+    if not persona_nom and hasattr(s, 'usuario_solicitante') and s.usuario_solicitante and hasattr(s.usuario_solicitante, 'persona') and s.usuario_solicitante.persona:
+        persona_nom = f"{s.usuario_solicitante.persona.nombres} {s.usuario_solicitante.persona.apellidos}".strip()
+
+    if not persona_nom:
+        persona_nom = usuario_email or f"Solicitud #{s.id}"
+
+    return {
+        "id": s.id,
+        "sacramento_id": s.sacramento_id,
+        "sacramento_nombre": sacramento_nom,
+        "usuario_correo": usuario_email,
+        "persona_nombre": persona_nom,
+        "estado": s.estado,
+        "requiere_validacion_manual": s.requiere_validacion_manual,
+        "fecha_preferida": s.fecha_preferida,
+        "created_at": s.created_at,
+        "updated_at": s.updated_at
+    }
+
+
 def listar_mis_solicitudes(
     db: Session,
     usuario_id: int,
@@ -247,7 +284,7 @@ def listar_mis_solicitudes(
         "total":     total,
         "pagina":    pagina,
         "por_pagina": por_pagina,
-        "items":     items
+        "items":     [_format_solicitud_list_item(s) for s in items]
     }
 
 
@@ -265,7 +302,7 @@ def listar_todas_solicitudes(
         "total":     total,
         "pagina":    pagina,
         "por_pagina": por_pagina,
-        "items":     items
+        "items":     [_format_solicitud_list_item(s) for s in items]
     }
 
 
@@ -441,12 +478,12 @@ def cambiar_estado_solicitud(
     solicitud = _get_solicitud_o_404(db, solicitud_id)
 
     transiciones = {
-        "pendiente":                ["en_revision", "rechazada", "cancelada"],
-        "en_revision":              ["aprobada", "rechazada", "documentacion_incompleta"],
-        "documentacion_incompleta": ["en_revision", "cancelada"],
-        "aprobada":                 [],
-        "rechazada":                [],
-        "cancelada":                [],
+        "pendiente":                ["en_revision", "aprobada", "rechazada", "documentacion_incompleta", "cancelada"],
+        "en_revision":              ["aprobada", "rechazada", "documentacion_incompleta", "pendiente", "cancelada"],
+        "documentacion_incompleta": ["en_revision", "aprobada", "rechazada", "pendiente", "cancelada"],
+        "aprobada":                 ["en_revision", "rechazada", "pendiente"],
+        "rechazada":                ["en_revision", "aprobada", "pendiente"],
+        "cancelada":                ["pendiente", "en_revision", "aprobada"],
     }
 
     permitidos = transiciones.get(solicitud.estado, [])

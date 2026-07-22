@@ -1,18 +1,18 @@
 <div class="app-shell">
-    <app-sidebar
-      [collapsed]="sidebarCollapsed"
-      [mobileOpen]="mobileSidebarOpen"
-      (closeMobile)="closeMobileSidebar()"
-    ></app-sidebar>
-  
-    <div
-      class="app-content"
-      [class.collapsed]="sidebarCollapsed"
-    >
-      <app-topbar (menuClick)="toggleSidebar()"></app-topbar>
-  
-      <main class="app-main">
-        <router-outlet></router-outlet>
-      </main>
-    </div>
+  <app-sidebar
+    [collapsed]="sidebarCollapsed()"
+    [mobileOpen]="mobileSidebarOpen()"
+    (closeMobile)="closeMobileSidebar()"
+  ></app-sidebar>
+
+  <div
+    class="app-content"
+    [class.collapsed]="sidebarCollapsed()"
+  >
+    <app-topbar (menuClick)="toggleSidebar()"></app-topbar>
+
+    <main class="app-main">
+      <router-outlet></router-outlet>
+    </main>
   </div>
+</div>

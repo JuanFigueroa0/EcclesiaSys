@@ -11,12 +11,17 @@ import { PerfilService } from '../../../perfil/services/perfil.service';
 export interface SolicitudItem {
   id?: number;
   fiel: string;
+  usuario_correo?: string;
   sacramento: string;
   sacramento_id?: number;
   estado: string;
+  raw_estado?: string;
   fecha: string;
   observaciones?: string;
+  observaciones_secretario?: string;
   motivo?: string;
+  personas?: any[];
+  documentos?: any[];
 }
 
 @Component({
@@ -44,6 +49,14 @@ export class SolicitudesListComponent implements OnInit {
   cargando = signal<boolean>(false);
   mensajeError = signal<string>('');
 
+  // Modal Detalle
+  modalDetalle = signal<boolean>(false);
+  solicitudSeleccionada = signal<any>(null);
+  cargandoDetalle = signal<boolean>(false);
+  nuevoEstadoDetalle = signal<string>('pendiente');
+  observacionesSecretario = signal<string>('');
+  guardandoEstado = signal<boolean>(false);
+
   perfilInfo = signal<any>(null);
   perfilCompleto = signal<boolean>(false);
 
@@ -51,7 +64,7 @@ export class SolicitudesListComponent implements OnInit {
 
   esAdmin = computed(() => {
     const roles: string[] = this.session?.roles ?? [];
-    const rolesAdmin = ['superadmin', 'administrador parroquial', 'secretario', 'párroco', 'parroco'];
+    const rolesAdmin = ['superadmin', 'administrador parroquial', 'secretario', 'secretaria', 'párroco', 'parroco', 'admin'];
     return roles.some((r) => rolesAdmin.includes(r.toLowerCase().trim()));
   });
 
@@ -60,7 +73,10 @@ export class SolicitudesListComponent implements OnInit {
     const list = this.solicitudes();
     if (!query) return list;
     return list.filter(
-      (s) => (s.fiel && s.fiel.toLowerCase().includes(query)) || (s.sacramento && s.sacramento.toLowerCase().includes(query))
+      (s) =>
+        (s.fiel && s.fiel.toLowerCase().includes(query)) ||
+        (s.usuario_correo && s.usuario_correo.toLowerCase().includes(query)) ||
+        (s.sacramento && s.sacramento.toLowerCase().includes(query))
     );
   });
 
@@ -145,6 +161,63 @@ export class SolicitudesListComponent implements OnInit {
     this.modalCrear.set(false);
     this.archivoAdjunto.set(null);
     this.mensajeError.set('');
+  }
+
+  verDetalle(s: SolicitudItem): void {
+    this.cargandoDetalle.set(true);
+    this.solicitudSeleccionada.set(s);
+    this.nuevoEstadoDetalle.set(s.raw_estado || 'pendiente');
+    this.observacionesSecretario.set(s.observaciones_secretario || s.observaciones || '');
+    this.modalDetalle.set(true);
+
+    if (s.id) {
+      this.solService.getById(s.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (det) => {
+          this.cargandoDetalle.set(false);
+          if (det) {
+            this.solicitudSeleccionada.set({
+              ...s,
+              ...det,
+              fiel: s.fiel,
+              sacramento: s.sacramento,
+            });
+            this.nuevoEstadoDetalle.set(det.estado || s.raw_estado || 'pendiente');
+            this.observacionesSecretario.set(det.observaciones_secretario || det.observaciones || '');
+          }
+        },
+        error: () => this.cargandoDetalle.set(false),
+      });
+    } else {
+      this.cargandoDetalle.set(false);
+    }
+  }
+
+  cerrarModalDetalle(): void {
+    this.modalDetalle.set(false);
+    this.solicitudSeleccionada.set(null);
+  }
+
+  guardarNuevoEstado(): void {
+    const sol = this.solicitudSeleccionada();
+    if (!sol || !sol.id) return;
+
+    this.guardandoEstado.set(true);
+    const estado = this.nuevoEstadoDetalle();
+    const obs = this.observacionesSecretario();
+
+    this.solService.update(sol.id, { estado, observaciones_secretario: obs }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.guardandoEstado.set(false);
+        this.cerrarModalDetalle();
+        this.cargarSolicitudes();
+      },
+      error: (err) => {
+        console.error('Error al actualizar estado de la solicitud:', err);
+        this.guardandoEstado.set(false);
+        this.cerrarModalDetalle();
+        this.cargarSolicitudes();
+      },
+    });
   }
 
   irAPerfil(): void {
@@ -234,27 +307,22 @@ export class SolicitudesListComponent implements OnInit {
     if (s.id) {
       this.solService.update(s.id, { estado: nuevoEstado }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
-          this.solicitudes.update(list => list.map(item => item.id === s.id ? { ...item, estado: nuevoEstado } : item));
+          this.cargarSolicitudes();
         },
         error: () => {
-          this.solicitudes.update(list => list.map(item => item.id === s.id ? { ...item, estado: nuevoEstado } : item));
+          this.cargarSolicitudes();
         },
       });
-    } else {
-      this.solicitudes.update(list => list.map(item => item === s ? { ...item, estado: nuevoEstado } : item));
     }
   }
 
   getBadgeClass(estado: string): string {
-    switch (estado) {
-      case 'Aprobada':
-      case 'aprobada':
-        return 'bg-success';
-      case 'Rechazada':
-      case 'rechazada':
-        return 'bg-danger';
-      default:
-        return 'bg-warning text-dark';
-    }
+    const e = (estado || '').toLowerCase();
+    if (e.includes('aprob')) return 'bg-success';
+    if (e.includes('recha')) return 'bg-danger';
+    if (e.includes('revis')) return 'bg-info text-dark';
+    if (e.includes('incomp') || e.includes('doc')) return 'bg-secondary';
+    if (e.includes('cancel')) return 'bg-dark';
+    return 'bg-warning text-dark';
   }
 }

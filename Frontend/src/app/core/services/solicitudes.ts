@@ -15,14 +15,7 @@ export class SolicitudesService {
     return this.http.get<any>(`${this.apiUrl}/solicitudes/admin/todas`).pipe(
       map((res) => {
         const rawItems = res?.items || (Array.isArray(res) ? res : []);
-        return rawItems.map((s: any) => ({
-          id: s.id,
-          fiel: s.persona_nombre || s.usuario_correo || `Solicitud #${s.id}`,
-          sacramento: s.sacramento_nombre || `Sacramento #${s.sacramento_id}`,
-          sacramento_id: s.sacramento_id,
-          estado: s.estado === 'pendiente' ? 'Pendiente' : s.estado === 'aprobada' ? 'Aprobada' : s.estado === 'rechazada' ? 'Rechazada' : s.estado || 'Pendiente',
-          fecha: s.created_at ? s.created_at.split('T')[0] : '',
-        }));
+        return rawItems.map((s: any) => this.mapSolicitudItem(s));
       }),
       catchError(() => this.getMisSolicitudes())
     );
@@ -32,18 +25,20 @@ export class SolicitudesService {
     return this.http.get<any>(`${this.apiUrl}/solicitudes/mis-solicitudes`).pipe(
       map((res) => {
         const rawItems = res?.items || (Array.isArray(res) ? res : []);
-        return rawItems.map((s: any) => ({
-          id: s.id,
-          fiel: s.persona_nombre || s.usuario_correo || 'Mis Trámites',
-          sacramento: s.sacramento_nombre || `Sacramento #${s.sacramento_id}`,
-          sacramento_id: s.sacramento_id,
-          estado: s.estado === 'pendiente' ? 'Pendiente' : s.estado === 'aprobada' ? 'Aprobada' : s.estado === 'rechazada' ? 'Rechazada' : s.estado || 'Pendiente',
-          fecha: s.created_at ? s.created_at.split('T')[0] : '',
-        }));
+        return rawItems.map((s: any) => this.mapSolicitudItem(s));
       }),
       catchError((err) => {
         console.warn('Error backend mis-solicitudes:', err);
         return of([]);
+      })
+    );
+  }
+
+  getById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/solicitudes/${id}`).pipe(
+      catchError((err) => {
+        console.warn(`Error al consultar detalle de solicitud ${id}:`, err);
+        return of(null);
       })
     );
   }
@@ -73,8 +68,32 @@ export class SolicitudesService {
   update(id: number, payload: { estado: string; observaciones_secretario?: string }): Observable<any> {
     const body = {
       estado: payload.estado.toLowerCase(),
-      observaciones_secretario: payload.observaciones_secretario || 'Actualización de estado',
+      observaciones_secretario: payload.observaciones_secretario || '',
     };
     return this.http.patch<any>(`${this.apiUrl}/solicitudes/${id}/estado`, body);
+  }
+
+  private mapSolicitudItem(s: any): any {
+    const rawEstado = (s.estado || 'pendiente').toLowerCase();
+    const estadoLabels: Record<string, string> = {
+      pendiente: 'Pendiente',
+      en_revision: 'En Revisión',
+      documentacion_incompleta: 'Doc. Incompleta',
+      aprobada: 'Aprobada',
+      rechazada: 'Rechazada',
+      cancelada: 'Cancelada',
+    };
+
+    return {
+      id: s.id,
+      fiel: s.persona_nombre || s.usuario_correo || `Fiel Solicitante #${s.id}`,
+      usuario_correo: s.usuario_correo || '',
+      sacramento: s.sacramento_nombre || `Sacramento #${s.sacramento_id}`,
+      sacramento_id: s.sacramento_id,
+      estado: estadoLabels[rawEstado] || s.estado || 'Pendiente',
+      raw_estado: rawEstado,
+      fecha: s.created_at ? s.created_at.split('T')[0] : '',
+      requiere_validacion_manual: s.requiere_validacion_manual,
+    };
   }
 }
