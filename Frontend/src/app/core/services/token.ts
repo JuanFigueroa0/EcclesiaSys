@@ -65,6 +65,14 @@ export class TokenService {
   }
 
   getUserData(): Session | null {
-  return this.getSession();
+    return this.getSession();
+  }
+
+  updatePerfilCompleto(completo: boolean): void {
+    const session = this.getSession();
+    if (session) {
+      session.perfil_completo = completo;
+      this.saveSession(session);
+    }
   }
 }

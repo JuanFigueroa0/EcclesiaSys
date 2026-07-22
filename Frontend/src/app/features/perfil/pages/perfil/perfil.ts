@@ -21,10 +21,21 @@ export class PerfilComponent implements OnInit {
   sesionesCargadas = false;
 
   cargando = true;
+  guardando = false;
   activeTab = 'info';
   perfilExiste = false;
 
-  tiposDocumento = ['CC', 'TI', 'CE', 'Pasaporte'];
+  mensajeExito = '';
+  mensajeError = '';
+
+  tiposDocumento = [
+    { label: 'Cédula de Ciudadanía (CC)', value: 'CC' },
+    { label: 'Tarjeta de Identidad (TI)', value: 'TI' },
+    { label: 'Cédula de Extranjería (CE)', value: 'CE' },
+    { label: 'Pasaporte (PA)', value: 'PA' },
+    { label: 'Registro Civil (RC)', value: 'RC' },
+    { label: 'Sin Documento / Menor', value: 'sin_documento' }
+  ];
 
   sexos = [
     { label: 'Masculino', value: 'masculino' },
@@ -149,6 +160,10 @@ export class PerfilComponent implements OnInit {
       return;
     }
 
+    this.mensajeExito = '';
+    this.mensajeError = '';
+    this.guardando = true;
+
     const valores = this.perfilForm.value;
 
     const request = this.perfilExiste
@@ -157,12 +172,27 @@ export class PerfilComponent implements OnInit {
 
     request.subscribe({
       next: (res) => {
-        alert('Perfil guardado correctamente');
+        this.guardando = false;
+        this.mensajeExito = 'Perfil guardado correctamente.';
         this.perfilExiste = true;
         this.perfilForm.patchValue(res);
         this.perfilForm.markAsPristine();
+        if (this.usuario) {
+          this.usuario.perfil_completo = true;
+        }
       },
-      error: console.error,
+      error: (err) => {
+        this.guardando = false;
+        console.error('Error al guardar perfil:', err);
+        const detail = err?.error?.detail;
+        if (typeof detail === 'string') {
+          this.mensajeError = detail;
+        } else if (Array.isArray(detail)) {
+          this.mensajeError = detail.map((d: any) => d.msg || d).join(', ');
+        } else {
+          this.mensajeError = 'Ocurrió un error al intentar guardar los datos del perfil.';
+        }
+      },
     });
   }
 

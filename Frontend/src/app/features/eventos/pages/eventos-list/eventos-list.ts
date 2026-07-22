@@ -25,10 +25,10 @@ export class EventosListComponent implements OnInit {
   filtroTipo = signal<string>('');
   modalCrear = signal<boolean>(false);
 
-  session = this.tokenService.getUserData();
+  session = signal<any>(this.tokenService.getUserData());
 
   esAdmin = computed(() => {
-    const roles: string[] = this.session?.roles ?? [];
+    const roles: string[] = this.session()?.roles ?? [];
     const rolesAdmin = ['superadmin', 'administrador parroquial', 'secretario', 'párroco', 'parroco'];
     return roles.some((r) => rolesAdmin.includes(r.toLowerCase().trim()));
   });

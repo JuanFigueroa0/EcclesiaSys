@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { CertificadosService } from '../../services/certificados.service';
@@ -25,10 +25,10 @@ export class CertificadosListComponent implements OnInit {
   userEmail = '';
   userName = '';
 
-  session = this.tokenService.getUserData();
+  session = signal<any>(this.tokenService.getUserData());
 
   get esAdmin(): boolean {
-    const roles: string[] = this.session?.roles ?? [];
+    const roles: string[] = this.session()?.roles ?? [];
     const rolesAdmin = ['superadmin', 'administrador parroquial', 'secretario', 'párroco', 'parroco'];
     return roles.some((r) => rolesAdmin.includes(r.toLowerCase().trim()));
   }
@@ -40,7 +40,7 @@ export class CertificadosListComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    const sessionAny = this.session as any;
+    const sessionAny = this.session() as any;
     this.userEmail = sessionAny?.correo || sessionAny?.email || '';
 
     this.perfilService.getPerfil().subscribe({

@@ -57,7 +57,7 @@ export class ResetPasswordComponent implements OnInit {
     this.mensajeError = '';
     this.mensajeExito = '';
 
-    this.authService.restablecerContrasena(this.token, contrasena_nueva).subscribe({
+    this.authService.restablecerContrasena(this.token, contrasena_nueva, confirmar_contrasena).subscribe({
       next: () => {
         this.cargando = false;
         this.mensajeExito = 'Tu contraseña ha sido actualizada con éxito. Redirigiendo al inicio de sesión...';

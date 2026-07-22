@@ -27,7 +27,7 @@ export class TopbarComponent implements OnInit {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
-  session = this.tokenService.getUserData();
+  session = signal<any>(this.tokenService.getUserData());
   perfil = signal<any>(null);
   usuario = signal<any>(null);
   unreadNotifCount = signal<number>(0);
@@ -42,7 +42,15 @@ export class TopbarComponent implements OnInit {
   });
 
   role = computed(() => {
-    return this.session?.roles?.[0] ?? 'Usuario';
+    const roles: string[] = this.session()?.roles ?? [];
+    if (roles.length === 0) return 'Usuario';
+    const prioridad = ['superadmin', 'admin del sitio', 'administrador parroquial', 'párroco', 'parroco', 'secretario', 'secretaria', 'catequista'];
+    for (const prio of prioridad) {
+      const encontrado = roles.find((r) => r.toLowerCase().trim() === prio);
+      if (encontrado) return encontrado;
+    }
+    const esp = roles.find((r) => !['usuario', 'usuario fiel'].includes(r.toLowerCase().trim()));
+    return esp || roles[0] || 'Usuario';
   });
 
   initial = computed(() => {
@@ -54,6 +62,9 @@ export class TopbarComponent implements OnInit {
     if (!isPlatformBrowser(this.platformId) || !this.tokenService.isLoggedIn()) {
       return;
     }
+
+    // Refrescar sesión por si el componente ya estaba montado al hacer login
+    this.session.set(this.tokenService.getUserData());
 
     this.perfilService.getPerfil().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (p) => {

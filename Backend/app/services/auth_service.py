@@ -96,6 +96,7 @@ class AuthService:
                 UsuarioRol.usuario_id == usuario.id,
                 UsuarioRol.activo == True
             )
+            .order_by(Rol.id.desc())
             .all()
         )
         roles_lista = [r.nombre for r in roles_query]
@@ -203,6 +204,7 @@ class AuthService:
                 UsuarioRol.usuario_id == usuario.id,
                 UsuarioRol.activo     == True
             )
+            .order_by(Rol.id.desc())
             .all()
         )
         roles_lista = [r.nombre for r in roles_query]

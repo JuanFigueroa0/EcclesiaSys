@@ -50,6 +50,18 @@
 
 <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()" class="ecclesia-card p-4">
 
+  @if (mensajeExito) {
+    <div class="alert alert-success border-0 shadow-sm mb-3">
+      <i class="bi bi-check-circle-fill me-2"></i>{{ mensajeExito }}
+    </div>
+  }
+
+  @if (mensajeError) {
+    <div class="alert alert-danger border-0 shadow-sm mb-3">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajeError }}
+    </div>
+  }
+
   <div class="row g-3">
 
     <div class="col-md-6">
@@ -113,8 +125,8 @@
 
         <option value="" disabled>Seleccione</option>
 
-        <option *ngFor="let t of tiposDocumento" [value]="t">
-          {{ t }}
+        <option *ngFor="let t of tiposDocumento" [value]="t.value">
+          {{ t.label }}
         </option>
 
       </select>
@@ -141,9 +153,13 @@
 
   </div>
 
-  <button type="submit" class="ecclesia-btn mt-4" [disabled]="perfilForm.invalid || !hayCambios()">
+  <button type="submit" class="ecclesia-btn mt-4" [disabled]="perfilForm.invalid || !hayCambios() || guardando">
 
-    {{ perfilExiste ? 'Actualizar perfil' : 'Completar perfil' }}
+    @if (guardando) {
+      <span class="spinner-border spinner-border-sm me-2"></span>Guardando...
+    } @else {
+      {{ perfilExiste ? 'Actualizar perfil' : 'Completar perfil' }}
+    }
 
   </button>
 

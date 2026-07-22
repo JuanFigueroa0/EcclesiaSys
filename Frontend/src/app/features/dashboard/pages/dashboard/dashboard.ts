@@ -31,12 +31,24 @@ export class DashboardComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   cargando = signal<boolean>(true);
-  session = this.tokenService.getUserData();
+  session = signal<any>(this.tokenService.getUserData());
 
   esAdmin = computed(() => {
-    const roles: string[] = this.session?.roles ?? [];
+    const roles: string[] = this.session()?.roles ?? [];
     const rolesAdmin = ['superadmin', 'administrador parroquial', 'secretario', 'párroco', 'parroco'];
     return roles.some((r) => rolesAdmin.includes(r.toLowerCase().trim()));
+  });
+
+  rolPrincipal = computed(() => {
+    const roles: string[] = this.session()?.roles ?? [];
+    if (roles.length === 0) return 'Usuario Fiel';
+    const prioridad = ['superadmin', 'admin del sitio', 'administrador parroquial', 'párroco', 'parroco', 'secretario', 'secretaria', 'catequista'];
+    for (const prio of prioridad) {
+      const encontrado = roles.find((r) => r.toLowerCase().trim() === prio);
+      if (encontrado) return encontrado;
+    }
+    const esp = roles.find((r) => !['usuario', 'usuario fiel'].includes(r.toLowerCase().trim()));
+    return esp || roles[0] || 'Usuario Fiel';
   });
 
   stats = signal<any[]>([]);

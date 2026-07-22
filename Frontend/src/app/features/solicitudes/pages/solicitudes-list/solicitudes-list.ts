@@ -60,10 +60,10 @@ export class SolicitudesListComponent implements OnInit {
   perfilInfo = signal<any>(null);
   perfilCompleto = signal<boolean>(false);
 
-  session = this.tokenService.getUserData();
+  session = signal<any>(this.tokenService.getUserData());
 
   esAdmin = computed(() => {
-    const roles: string[] = this.session?.roles ?? [];
+    const roles: string[] = this.session()?.roles ?? [];
     const rolesAdmin = ['superadmin', 'administrador parroquial', 'secretario', 'secretaria', 'párroco', 'parroco', 'admin'];
     return roles.some((r) => rolesAdmin.includes(r.toLowerCase().trim()));
   });

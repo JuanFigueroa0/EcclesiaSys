@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CursosService } from '../../services/cursos.service';
@@ -20,10 +20,10 @@ export class CursosListComponent implements OnInit {
   cursos: Curso[] = [];
   modalCrear = false;
 
-  session = this.tokenService.getUserData();
+  session = signal<any>(this.tokenService.getUserData());
 
   get esAdmin(): boolean {
-    const roles: string[] = this.session?.roles ?? [];
+    const roles: string[] = this.session()?.roles ?? [];
     const rolesAdmin = ['superadmin', 'administrador parroquial', 'secretario', 'párroco', 'parroco'];
     return roles.some((r) => rolesAdmin.includes(r.toLowerCase().trim()));
   }

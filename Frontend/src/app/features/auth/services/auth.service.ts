@@ -107,11 +107,11 @@ export class AuthService {
   }
 
   recuperarContrasena(correo: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/auth/recuperar-contrasena`, { correo });
+    return this.http.post<any>(`${this.apiUrl}/auth/forgot-password`, { correo });
   }
 
-  restablecerContrasena(token: string, contrasena_nueva: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/auth/reset-password`, { token, contrasena_nueva });
+  restablecerContrasena(token: string, contrasena_nueva: string, confirmar_contrasena: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/auth/reset-password-confirm`, { token, contrasena_nueva, confirmar_contrasena });
   }
 
   logout(): void {

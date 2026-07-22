@@ -4,12 +4,15 @@ import { environment } from '../../../../environments/environment';
 import { BehaviorSubject, tap, Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+import { TokenService } from '../../../core/services/token';
+
 @Injectable({
   providedIn: 'root',
 })
 export class PerfilService {
 
   private http = inject(HttpClient);
+  private tokenService = inject(TokenService);
   private apiUrl = environment.apiUrl;
 
   // =========================
@@ -63,13 +66,21 @@ export class PerfilService {
 
   crearPerfil(data: any) {
     return this.http.post(`${this.apiUrl}/usuarios/me/perfil`, data).pipe(
-      tap((res: any) => this.perfilSubject.next(res))
+      tap((res: any) => {
+        this.perfilNotFound = false;
+        this.perfilSubject.next(res);
+        this.tokenService.updatePerfilCompleto(true);
+      })
     );
   }
 
   actualizarPerfil(data: any) {
     return this.http.put(`${this.apiUrl}/usuarios/me/perfil`, data).pipe(
-      tap((res: any) => this.perfilSubject.next(res))
+      tap((res: any) => {
+        this.perfilNotFound = false;
+        this.perfilSubject.next(res);
+        this.tokenService.updatePerfilCompleto(true);
+      })
     );
   }
 
