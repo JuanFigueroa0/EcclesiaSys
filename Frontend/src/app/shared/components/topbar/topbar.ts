@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, EventEmitter, Output, inject, OnInit, PLATFORM_ID, ChangeDetectionStrategy, signal, computed, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../features/auth/services/auth.service';
@@ -8,9 +9,11 @@ import { NotificacionesService } from '../../../features/notificaciones/services
 
 @Component({
   selector: 'app-topbar',
+  standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './topbar.html',
   styleUrl: './topbar.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopbarComponent implements OnInit {
 
@@ -22,30 +25,49 @@ export class TopbarComponent implements OnInit {
   private tokenService = inject(TokenService);
   private notifService = inject(NotificacionesService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   session = this.tokenService.getUserData();
-  perfil: any = null;
-  usuario: any = null;
-  unreadNotifCount = 0;
+  perfil = signal<any>(null);
+  usuario = signal<any>(null);
+  unreadNotifCount = signal<number>(0);
+
+  fullName = computed(() => {
+    const p = this.perfil();
+    if (!p) return 'Usuario';
+    const nombreCompleto = `${p.primer_nombre ?? ''} ${p.primer_apellido ?? ''}`.trim();
+    if (nombreCompleto) return nombreCompleto;
+    const u = this.usuario();
+    return p.correo ?? u?.correo ?? 'Usuario';
+  });
+
+  role = computed(() => {
+    return this.session?.roles?.[0] ?? 'Usuario';
+  });
+
+  initial = computed(() => {
+    const p = this.perfil();
+    return p?.primer_nombre?.charAt(0)?.toUpperCase() || 'U';
+  });
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId) || !this.tokenService.isLoggedIn()) {
       return;
     }
 
-    this.perfilService.getPerfil().subscribe({
+    this.perfilService.getPerfil().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (p) => {
-        this.perfil = p;
+        this.perfil.set(p);
       },
       error: (err) => {
         console.error('Error cargando perfil en topbar:', err);
-        this.perfil = {};
+        this.perfil.set({});
       },
     });
 
-    this.perfilService.getMe().subscribe({
+    this.perfilService.getMe().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (u) => {
-        this.usuario = u;
+        this.usuario.set(u);
       },
       error: (err) => console.error('Error cargando usuario en topbar:', err),
     });
@@ -54,39 +76,18 @@ export class TopbarComponent implements OnInit {
   }
 
   cargarNotificaciones(): void {
-    this.notifService.getNotificaciones().subscribe({
+    this.notifService.getNotificaciones().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (list) => {
         if (Array.isArray(list)) {
-          this.unreadNotifCount = list.filter((n) => !n.leida).length;
+          this.unreadNotifCount.set(list.filter((n) => !n.leida).length);
         }
       },
-      error: () => (this.unreadNotifCount = 0),
+      error: () => this.unreadNotifCount.set(0),
     });
   }
 
   irANotificaciones(): void {
     this.router.navigate(['/app/notificaciones']);
-  }
-
-  get fullName(): string {
-
-    if (!this.perfil) return 'Usuario';
-
-    const nombreCompleto = `${this.perfil.primer_nombre ?? ''} ${this.perfil.primer_apellido ?? ''}`.trim();
-
-    if (nombreCompleto) {
-      return nombreCompleto;
-    }
-
-    return this.perfil.correo ?? this.usuario?.correo ?? 'Usuario';
-  }
-
-  get role(): string {
-    return this.session?.roles?.[0] ?? 'Usuario';
-  }
-
-  get initial(): string {
-    return this.perfil?.primer_nombre?.charAt(0)?.toUpperCase() || 'U';
   }
 
   logout(): void {

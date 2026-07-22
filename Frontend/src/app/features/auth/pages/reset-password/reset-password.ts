@@ -21,6 +21,8 @@ export class ResetPasswordComponent implements OnInit {
   cargando = false;
   mensajeExito = '';
   mensajeError = '';
+  showPassword = false;
+  showConfirm = false;
 
   form: FormGroup = this.fb.group({
     contrasena_nueva: ['', [Validators.required, Validators.minLength(6)]],
@@ -29,6 +31,14 @@ export class ResetPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.token = this.route.snapshot.queryParams['token'] || '';
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirm(): void {
+    this.showConfirm = !this.showConfirm;
   }
 
   restablecer(): void {

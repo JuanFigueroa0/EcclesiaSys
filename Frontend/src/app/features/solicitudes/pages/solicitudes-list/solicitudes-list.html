@@ -1,9 +1,9 @@
 <div class="pg-wrap p-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-      <h1 class="h3 mb-1 font-weight-bold">{{ esAdmin ? 'Bandeja General de Solicitudes' : 'Mis Solicitudes Sacramentales' }}</h1>
+      <h1 class="h3 mb-1 font-weight-bold">{{ esAdmin() ? 'Bandeja General de Solicitudes' : 'Mis Solicitudes Sacramentales' }}</h1>
       <p class="text-muted mb-0">
-        {{ esAdmin ? 'Gestión, revisión y aprobación de trámites parroquiales' : 'Consulta el estado de tus trámites y radica nuevas solicitudes' }}
+        {{ esAdmin() ? 'Gestión, revisión y aprobación de trámites parroquiales' : 'Consulta el estado de tus trámites y radica nuevas solicitudes' }}
       </p>
     </div>
     <button class="btn btn-primary font-weight-bold" (click)="abrirModal()">
@@ -11,7 +11,7 @@
     </button>
   </div>
 
-  @if (!perfilCompleto && !esAdmin) {
+  @if (!perfilCompleto() && !esAdmin()) {
     <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center justify-content-between mb-4 p-3 rounded">
       <div>
         <i class="bi bi-exclamation-triangle-fill fs-5 text-warning me-2"></i>
@@ -27,7 +27,7 @@
     <div class="col-md-4">
       <div class="input-group">
         <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
-        <input type="text" class="form-control border-start-0" placeholder="Buscar por fiel o sacramento..." [(ngModel)]="busqueda" />
+        <input type="text" class="form-control border-start-0" placeholder="Buscar por fiel o sacramento..." [ngModel]="busqueda()" (ngModelChange)="onBusquedaChange($event)" />
       </div>
     </div>
   </div>
@@ -41,13 +41,13 @@
             <th>Sacramento Solicito</th>
             <th>Estado</th>
             <th>Fecha Radicación</th>
-            @if (esAdmin) {
+            @if (esAdmin()) {
               <th class="text-end">Acciones Administrador</th>
             }
           </tr>
         </thead>
         <tbody>
-          @for (s of filtradas; track s.id) {
+          @for (s of filtradas(); track s.id || $index) {
             <tr>
               <td class="fw-bold">
                 <i class="bi bi-person-fill text-primary me-2"></i>
@@ -60,7 +60,7 @@
                 </span>
               </td>
               <td class="text-muted small">{{ s.fecha }}</td>
-              @if (esAdmin) {
+              @if (esAdmin()) {
                 <td class="text-end">
                   <div class="btn-group btn-group-sm">
                     <button class="btn btn-outline-success" (click)="cambiarEstado(s, 'Aprobada')" title="Aprobar Solicitud">
@@ -75,7 +75,7 @@
             </tr>
           } @empty {
             <tr>
-              <td [attr.colspan]="esAdmin ? 5 : 4" class="text-center text-muted py-5">
+              <td [attr.colspan]="esAdmin() ? 5 : 4" class="text-center text-muted py-5">
                 <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
                 No se encontraron solicitudes registradas.
               </td>
@@ -88,18 +88,18 @@
 </div>
 
 <!-- Modal Nueva Solicitud -->
-@if (modalCrear) {
+@if (modalCrear()) {
   <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5);" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content border-0 shadow">
         <div class="modal-header">
           <h5 class="modal-title font-weight-bold">Radicación de Nueva Solicitud Sacramental</h5>
-          <button type="button" class="btn-close" (click)="cerrarModal()" [disabled]="cargando"></button>
+          <button type="button" class="btn-close" (click)="cerrarModal()" [disabled]="cargando()"></button>
         </div>
         <form [formGroup]="solForm" (ngSubmit)="guardar()">
           <div class="modal-body">
 
-            @if (!perfilCompleto && !esAdmin) {
+            @if (!perfilCompleto() && !esAdmin()) {
               <div class="alert alert-danger border-0 shadow-sm mb-4">
                 <div class="d-flex align-items-center justify-content-between">
                   <div>
@@ -114,9 +114,9 @@
               </div>
             }
 
-            @if (mensajeError) {
+            @if (mensajeError()) {
               <div class="alert alert-danger border-0 shadow-sm mb-3">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajeError }}
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajeError() }}
               </div>
             }
 
@@ -124,7 +124,7 @@
               <label class="form-label font-weight-bold">Sacramento Solicitado *</label>
               <select class="form-select" formControlName="sacramento_id">
                 <option value="">-- Seleccionar Sacramento --</option>
-                @for (sac of sacramentos; track sac.id) {
+                @for (sac of sacramentos(); track sac.id || $index) {
                   <option [value]="sac.id">{{ sac.nombre }}</option>
                 }
               </select>
@@ -237,9 +237,9 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-light" (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
-            <button type="submit" class="btn btn-primary" [disabled]="cargando || (!perfilCompleto && !esAdmin)">
-              @if (cargando) {
+            <button type="button" class="btn btn-light" (click)="cerrarModal()" [disabled]="cargando()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="cargando() || (!perfilCompleto() && !esAdmin())">
+              @if (cargando()) {
                 <span class="spinner-border spinner-border-sm me-2" role="status"></span>
                 Radicando...
               } @else {

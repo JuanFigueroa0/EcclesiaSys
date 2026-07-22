@@ -13,7 +13,7 @@
     <div class="col-md-4">
       <div class="input-group">
         <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
-        <input type="text" class="form-control border-start-0" placeholder="Buscar por correo o usuario..." [(ngModel)]="busqueda" />
+        <input type="text" class="form-control border-start-0" placeholder="Buscar por correo o usuario..." [ngModel]="busqueda()" (ngModelChange)="onBusquedaChange($event)" />
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@
           </tr>
         </thead>
         <tbody>
-          @if (cargando) {
+          @if (cargando()) {
             <tr>
               <td colspan="4" class="text-center py-5">
                 <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
@@ -38,7 +38,7 @@
               </td>
             </tr>
           } @else {
-            @for (u of usuariosFiltrados; track u.id) {
+            @for (u of usuariosFiltrados(); track u.id || $index) {
               <tr>
                 <td class="fw-bold"><i class="bi bi-person-circle text-secondary me-2"></i>{{ u.correo }}</td>
                 <td><span class="badge bg-light text-dark border">{{ u.rol }}</span></td>
@@ -72,31 +72,31 @@
 </div>
 
 <!-- Modal Crear/Editar Usuario -->
-@if (modalCrear) {
+@if (modalCrear()) {
   <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5);" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow">
         <div class="modal-header">
-          <h5 class="modal-title font-weight-bold">{{ usuarioEditarId ? 'Editar Rol de Usuario' : 'Registrar Nuevo Usuario' }}</h5>
-          <button type="button" class="btn-close" (click)="cerrarModal()" [disabled]="guardando"></button>
+          <h5 class="modal-title font-weight-bold">{{ usuarioEditarId() ? 'Editar Rol de Usuario' : 'Registrar Nuevo Usuario' }}</h5>
+          <button type="button" class="btn-close" (click)="cerrarModal()" [disabled]="guardando()"></button>
         </div>
         <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
           <div class="modal-body">
-            @if (mensajeError) {
+            @if (mensajeError()) {
               <div class="alert alert-danger border-0 shadow-sm mb-3">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajeError }}
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajeError() }}
               </div>
             }
 
             <div class="mb-3">
               <label class="form-label font-weight-bold">Correo Electrónico *</label>
-              <input type="email" class="form-control" formControlName="correo" placeholder="ejemplo@ecclesiasys.com" [readonly]="!!usuarioEditarId" />
+              <input type="email" class="form-control" formControlName="correo" placeholder="ejemplo@ecclesiasys.com" [readonly]="!!usuarioEditarId()" />
               @if (usuarioForm.get('correo')?.invalid && usuarioForm.get('correo')?.touched) {
                 <small class="text-danger">Ingrese un correo electrónico válido.</small>
               }
             </div>
 
-            @if (!usuarioEditarId) {
+            @if (!usuarioEditarId()) {
               <div class="mb-3">
                 <label class="form-label font-weight-bold">Contraseña *</label>
                 <input type="password" class="form-control" formControlName="contrasena" placeholder="Contraseña de acceso inicial" />
@@ -108,7 +108,7 @@
               <label class="form-label font-weight-bold">Rol de Acceso *</label>
               <select class="form-select" formControlName="rol_id">
                 <option value="">-- Seleccionar Rol --</option>
-                @for (r of roles; track r.id) {
+                @for (r of roles(); track r.id || $index) {
                   <option [value]="r.id">{{ r.nombre }} - {{ r.descripcion }}</option>
                 }
               </select>
@@ -118,13 +118,13 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-light" (click)="cerrarModal()" [disabled]="guardando">Cancelar</button>
-            <button type="submit" class="btn btn-primary" [disabled]="guardando">
-              @if (guardando) {
+            <button type="button" class="btn btn-light" (click)="cerrarModal()" [disabled]="guardando()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="guardando()">
+              @if (guardando()) {
                 <span class="spinner-border spinner-border-sm me-2" role="status"></span>
                 Guardando...
               } @else {
-                <i class="bi bi-save me-1"></i>{{ usuarioEditarId ? 'Actualizar Rol' : 'Registrar Usuario' }}
+                <i class="bi bi-save me-1"></i>{{ usuarioEditarId() ? 'Actualizar Rol' : 'Registrar Usuario' }}
               }
             </button>
           </div>

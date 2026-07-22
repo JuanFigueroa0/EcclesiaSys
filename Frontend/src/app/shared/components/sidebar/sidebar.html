@@ -29,8 +29,8 @@
           <a routerLink="/app/solicitudes" routerLinkActive="active" class="sidebar-link" data-tooltip="Solicitudes" (click)="closeOnMobile()">
             <span class="sidebar-link-icon"><i class="bi bi-inbox-fill"></i></span>
             <span class="sidebar-link-text">Solicitudes</span>
-            @if (solicitudesCount > 0) {
-              <span class="sidebar-badge">{{ solicitudesCount }}</span>
+            @if (solicitudesCount() > 0) {
+              <span class="sidebar-badge">{{ solicitudesCount() }}</span>
             }
           </a>
         </li>
@@ -39,8 +39,8 @@
           <a routerLink="/app/notificaciones" routerLinkActive="active" class="sidebar-link" data-tooltip="Notificaciones" (click)="closeOnMobile()">
             <span class="sidebar-link-icon"><i class="bi bi-bell"></i></span>
             <span class="sidebar-link-text">Notificaciones</span>
-            @if (notificacionesCount > 0) {
-              <span class="sidebar-badge bg-warning text-dark">{{ notificacionesCount }}</span>
+            @if (notificacionesCount() > 0) {
+              <span class="sidebar-badge bg-warning text-dark">{{ notificacionesCount() }}</span>
             }
           </a>
         </li>
@@ -55,7 +55,7 @@
     </div>
 
     <!-- SECCIÓN: GESTIÓN -->
-    @if (tieneSeccionGestion) {
+    @if (tieneSeccionGestion()) {
       <div class="sidebar-section">
         <div class="sidebar-section-label">Gestión Parroquial</div>
 
@@ -112,7 +112,7 @@
     }
 
     <!-- SECCIÓN: ADMINISTRACIÓN -->
-    @if (tieneSeccionAdministracion) {
+    @if (tieneSeccionAdministracion()) {
       <div class="sidebar-section">
         <div class="sidebar-section-label">Administración</div>
 
@@ -160,16 +160,16 @@
   <div class="sidebar-footer">
     <div class="sidebar-user">
       <div class="sidebar-user-avatar">
-        {{ initials }}
+        {{ initials() }}
       </div>
 
       <div class="sidebar-user-info">
         <div class="sidebar-user-name">
-          {{ fullName }}
+          {{ fullName() }}
         </div>
 
         <div class="sidebar-user-role">
-          {{ role }}
+          {{ role() }}
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
@@ -24,6 +25,7 @@ export interface SolicitudItem {
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './solicitudes-list.html',
   styleUrl: './solicitudes-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SolicitudesListComponent implements OnInit {
   private solService = inject(SolicitudesService);
@@ -32,25 +34,35 @@ export class SolicitudesListComponent implements OnInit {
   private perfilService = inject(PerfilService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
 
-  solicitudes: SolicitudItem[] = [];
-  sacramentos: any[] = [];
-  busqueda = '';
-  modalCrear = false;
-  archivoAdjunto: File | null = null;
-  cargando = false;
-  mensajeError = '';
+  solicitudes = signal<SolicitudItem[]>([]);
+  sacramentos = signal<any[]>([]);
+  busqueda = signal<string>('');
+  modalCrear = signal<boolean>(false);
+  archivoAdjunto = signal<File | null>(null);
+  cargando = signal<boolean>(false);
+  mensajeError = signal<string>('');
 
-  perfilInfo: any = null;
-  perfilCompleto = false;
+  perfilInfo = signal<any>(null);
+  perfilCompleto = signal<boolean>(false);
 
   session = this.tokenService.getUserData();
 
-  get esAdmin(): boolean {
+  esAdmin = computed(() => {
     const roles: string[] = this.session?.roles ?? [];
     const rolesAdmin = ['superadmin', 'administrador parroquial', 'secretario', 'párroco', 'parroco'];
     return roles.some((r) => rolesAdmin.includes(r.toLowerCase().trim()));
-  }
+  });
+
+  filtradas = computed(() => {
+    const query = this.busqueda().trim().toLowerCase();
+    const list = this.solicitudes();
+    if (!query) return list;
+    return list.filter(
+      (s) => (s.fiel && s.fiel.toLowerCase().includes(query)) || (s.sacramento && s.sacramento.toLowerCase().includes(query))
+    );
+  });
 
   solForm: FormGroup = this.fb.group({
     sacramento_id: ['', Validators.required],
@@ -74,68 +86,65 @@ export class SolicitudesListComponent implements OnInit {
   }
 
   cargarPerfilUsuario(): void {
-    this.perfilService.getPerfil().subscribe({
+    this.perfilService.getPerfil().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (p) => {
         if (p && p.primer_nombre && p.primer_apellido) {
-          this.perfilInfo = p;
-          this.perfilCompleto = true;
+          this.perfilInfo.set(p);
+          this.perfilCompleto.set(true);
         } else {
-          this.perfilInfo = null;
-          this.perfilCompleto = false;
+          this.perfilInfo.set(null);
+          this.perfilCompleto.set(false);
         }
       },
       error: () => {
-        this.perfilInfo = null;
-        this.perfilCompleto = false;
+        this.perfilInfo.set(null);
+        this.perfilCompleto.set(false);
       },
     });
   }
 
   cargarSacramentos(): void {
-    this.sacService.getAll().subscribe({
-      next: (data) => (this.sacramentos = data || []),
-      error: () => (this.sacramentos = []),
+    this.sacService.getAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (data) => this.sacramentos.set(data || []),
+      error: () => this.sacramentos.set([]),
     });
   }
 
   cargarSolicitudes(): void {
-    const obs = this.esAdmin ? this.solService.getAll() : this.solService.getMisSolicitudes();
-    obs.subscribe({
+    const obs = this.esAdmin() ? this.solService.getAll() : this.solService.getMisSolicitudes();
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
-        this.solicitudes = data || [];
+        this.solicitudes.set(data || []);
       },
-      error: () => (this.solicitudes = []),
+      error: () => this.solicitudes.set([]),
     });
   }
 
-  get filtradas(): SolicitudItem[] {
-    if (!this.busqueda.trim()) return this.solicitudes;
-    const t = this.busqueda.toLowerCase();
-    return this.solicitudes.filter(
-      (s) => s.fiel.toLowerCase().includes(t) || s.sacramento.toLowerCase().includes(t)
-    );
+  onBusquedaChange(val: string): void {
+    this.busqueda.set(val);
   }
 
   abrirModal(): void {
-    this.mensajeError = '';
+    this.mensajeError.set('');
+    const perfil = this.perfilInfo();
     this.solForm.reset({
       sacramento_id: '',
-      tipo_documento: this.perfilInfo?.tipo_documento || 'CC',
-      primer_nombre: this.perfilInfo?.primer_nombre || '',
-      segundo_nombre: this.perfilInfo?.segundo_nombre || '',
-      primer_apellido: this.perfilInfo?.primer_apellido || '',
-      segundo_apellido: this.perfilInfo?.segundo_apellido || '',
-      numero_documento: this.perfilInfo?.numero_documento || '',
+      tipo_documento: perfil?.tipo_documento || 'CC',
+      primer_nombre: perfil?.primer_nombre || '',
+      segundo_nombre: perfil?.segundo_nombre || '',
+      primer_apellido: perfil?.primer_apellido || '',
+      segundo_apellido: perfil?.segundo_apellido || '',
+      numero_documento: perfil?.numero_documento || '',
       tipo_documento_adjunto: 'documento_identidad',
     });
-    this.archivoAdjunto = null;
-    this.modalCrear = true;
+    this.archivoAdjunto.set(null);
+    this.modalCrear.set(true);
   }
 
   cerrarModal(): void {
-    this.modalCrear = false;
-    this.archivoAdjunto = null;
-    this.mensajeError = '';
+    this.modalCrear.set(false);
+    this.archivoAdjunto.set(null);
+    this.mensajeError.set('');
   }
 
   irAPerfil(): void {
@@ -146,13 +155,13 @@ export class SolicitudesListComponent implements OnInit {
   onFileSelected(event: any): void {
     const file = event.target.files?.[0];
     if (file) {
-      this.archivoAdjunto = file;
+      this.archivoAdjunto.set(file);
     }
   }
 
   guardar(): void {
-    if (!this.perfilCompleto && !this.esAdmin) {
-      this.mensajeError = 'Debes completar tu perfil de usuario antes de radicar una solicitud.';
+    if (!this.perfilCompleto() && !this.esAdmin()) {
+      this.mensajeError.set('Debes completar tu perfil de usuario antes de radicar una solicitud.');
       return;
     }
 
@@ -161,8 +170,8 @@ export class SolicitudesListComponent implements OnInit {
       return;
     }
 
-    this.cargando = true;
-    this.mensajeError = '';
+    this.cargando.set(true);
+    this.mensajeError.set('');
     const val = this.solForm.value;
 
     const payload = {
@@ -186,46 +195,53 @@ export class SolicitudesListComponent implements OnInit {
       ],
     };
 
-    this.solService.create(payload).subscribe({
+    const adjunto = this.archivoAdjunto();
+
+    this.solService.create(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (nuevaSol) => {
-        if (this.archivoAdjunto && nuevaSol?.id) {
+        if (adjunto && nuevaSol?.id) {
           this.solService
-            .subirDocumento(nuevaSol.id, this.archivoAdjunto, val.tipo_documento_adjunto || 'requisito', 'requisito')
+            .subirDocumento(nuevaSol.id, adjunto, val.tipo_documento_adjunto || 'requisito', 'requisito')
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
               next: () => {
-                this.cargando = false;
+                this.cargando.set(false);
                 this.cargarSolicitudes();
                 this.cerrarModal();
               },
               error: (err) => {
                 console.error('Error al subir documento adjunto:', err);
-                this.cargando = false;
+                this.cargando.set(false);
                 this.cargarSolicitudes();
                 this.cerrarModal();
               },
             });
         } else {
-          this.cargando = false;
+          this.cargando.set(false);
           this.cargarSolicitudes();
           this.cerrarModal();
         }
       },
       error: (err) => {
         console.error('Error al crear solicitud:', err);
-        this.cargando = false;
-        this.mensajeError = err?.error?.detail || 'No se pudo radicar la solicitud. Verifique que su perfil esté completo.';
+        this.cargando.set(false);
+        this.mensajeError.set(err?.error?.detail || 'No se pudo radicar la solicitud. Verifique que su perfil esté completo.');
       },
     });
   }
 
   cambiarEstado(s: SolicitudItem, nuevoEstado: string): void {
     if (s.id) {
-      this.solService.update(s.id, { estado: nuevoEstado }).subscribe({
-        next: () => (s.estado = nuevoEstado),
-        error: () => (s.estado = nuevoEstado),
+      this.solService.update(s.id, { estado: nuevoEstado }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: () => {
+          this.solicitudes.update(list => list.map(item => item.id === s.id ? { ...item, estado: nuevoEstado } : item));
+        },
+        error: () => {
+          this.solicitudes.update(list => list.map(item => item.id === s.id ? { ...item, estado: nuevoEstado } : item));
+        },
       });
     } else {
-      s.estado = nuevoEstado;
+      this.solicitudes.update(list => list.map(item => item === s ? { ...item, estado: nuevoEstado } : item));
     }
   }
 

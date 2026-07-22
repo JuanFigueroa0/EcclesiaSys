@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { EventosService } from '../../services/eventos.service';
@@ -11,24 +12,36 @@ import { TokenService } from '../../../../core/services/token';
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './eventos-list.html',
   styleUrl: './eventos-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventosListComponent implements OnInit {
   private eventosService = inject(EventosService);
   private tokenService = inject(TokenService);
   private fb = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
 
-  eventos: Evento[] = [];
-  filtroEstado = '';
-  filtroTipo = '';
-  modalCrear = false;
+  eventos = signal<Evento[]>([]);
+  filtroEstado = signal<string>('');
+  filtroTipo = signal<string>('');
+  modalCrear = signal<boolean>(false);
 
   session = this.tokenService.getUserData();
 
-  get esAdmin(): boolean {
+  esAdmin = computed(() => {
     const roles: string[] = this.session?.roles ?? [];
     const rolesAdmin = ['superadmin', 'administrador parroquial', 'secretario', 'párroco', 'parroco'];
     return roles.some((r) => rolesAdmin.includes(r.toLowerCase().trim()));
-  }
+  });
+
+  eventosFiltrados = computed(() => {
+    const estado = this.filtroEstado();
+    const tipo = this.filtroTipo();
+    return this.eventos().filter((e) => {
+      const matchEstado = !estado || e.estado === estado;
+      const matchTipo = !tipo || e.tipo === tipo;
+      return matchEstado && matchTipo;
+    });
+  });
 
   eventoForm: FormGroup = this.fb.group({
     titulo: ['', Validators.required],
@@ -46,21 +59,21 @@ export class EventosListComponent implements OnInit {
   }
 
   cargarEventos(): void {
-    this.eventosService.getEventos().subscribe({
-      next: (data) => (this.eventos = data || []),
+    this.eventosService.getEventos().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (data) => this.eventos.set(data || []),
       error: (err) => {
         console.error('Error cargando eventos:', err);
-        this.eventos = [];
+        this.eventos.set([]);
       },
     });
   }
 
-  get eventosFiltrados(): Evento[] {
-    return this.eventos.filter((e) => {
-      const matchEstado = !this.filtroEstado || e.estado === this.filtroEstado;
-      const matchTipo = !this.filtroTipo || e.tipo === this.filtroTipo;
-      return matchEstado && matchTipo;
-    });
+  onFiltroEstadoChange(val: string): void {
+    this.filtroEstado.set(val);
+  }
+
+  onFiltroTipoChange(val: string): void {
+    this.filtroTipo.set(val);
   }
 
   abrirModal(): void {
@@ -70,11 +83,11 @@ export class EventosListComponent implements OnInit {
       hora: '08:00',
       cupo: 50,
     });
-    this.modalCrear = true;
+    this.modalCrear.set(true);
   }
 
   cerrarModal(): void {
-    this.modalCrear = false;
+    this.modalCrear.set(false);
   }
 
   guardarEvento(): void {
@@ -83,7 +96,7 @@ export class EventosListComponent implements OnInit {
       return;
     }
 
-    this.eventosService.createEvento(this.eventoForm.value).subscribe({
+    this.eventosService.createEvento(this.eventoForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.cargarEventos();
         this.cerrarModal();

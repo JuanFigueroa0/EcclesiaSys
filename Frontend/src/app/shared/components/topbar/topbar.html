@@ -13,24 +13,24 @@
   <div class="topbar-right">
     <button type="button" class="topbar-icon-btn position-relative" (click)="irANotificaciones()" title="Ver Notificaciones">
       <i class="bi bi-bell"></i>
-      @if (unreadNotifCount > 0) {
-        <span class="topbar-noti-badge">{{ unreadNotifCount }}</span>
+      @if (unreadNotifCount() > 0) {
+        <span class="topbar-noti-badge">{{ unreadNotifCount() }}</span>
       }
     </button>
 
     <div class="topbar-user-box">
       <div class="topbar-avatar">
-        {{ initial }}
+        {{ initial() }}
       </div>
 
       <div class="d-none d-md-block">
 
         <div class="topbar-user-correo">
-          {{ fullName }}
+          {{ fullName() }}
         </div>
 
         <div class="topbar-user-rol">
-          {{ role }}
+          {{ role() }}
         </div>
 
       </div>

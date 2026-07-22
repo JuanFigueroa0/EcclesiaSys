@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { UsuariosService } from '../../../../core/services/usuarios';
@@ -20,20 +21,33 @@ export interface UsuarioItem {
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './usuarios-list.html',
   styleUrl: './usuarios-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsuariosListComponent implements OnInit {
   private usuariosService = inject(UsuariosService);
   private rolesService = inject(RolesService);
   private fb = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
 
-  usuarios: UsuarioItem[] = [];
-  roles: Rol[] = [];
-  cargando = true;
-  guardando = false;
-  busqueda = '';
-  modalCrear = false;
-  usuarioEditarId: number | null = null;
-  mensajeError = '';
+  usuarios = signal<UsuarioItem[]>([]);
+  roles = signal<Rol[]>([]);
+  cargando = signal<boolean>(true);
+  guardando = signal<boolean>(false);
+  busqueda = signal<string>('');
+  modalCrear = signal<boolean>(false);
+  usuarioEditarId = signal<number | null>(null);
+  mensajeError = signal<string>('');
+
+  usuariosFiltrados = computed(() => {
+    const term = this.busqueda().trim().toLowerCase();
+    const list = this.usuarios();
+    if (!term) return list;
+    return list.filter(
+      (u) =>
+        (u.nombre && u.nombre.toLowerCase().includes(term)) ||
+        (u.correo && u.correo.toLowerCase().includes(term))
+    );
+  });
 
   usuarioForm: FormGroup = this.fb.group({
     correo: ['', [Validators.required, Validators.email]],
@@ -48,61 +62,58 @@ export class UsuariosListComponent implements OnInit {
   }
 
   cargarRoles(): void {
-    this.rolesService.obtenerRoles().subscribe({
-      next: (list) => (this.roles = list || []),
-      error: () => (this.roles = []),
+    this.rolesService.obtenerRoles().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (list) => this.roles.set(list || []),
+      error: () => this.roles.set([]),
     });
   }
 
   cargarUsuarios(): void {
-    this.cargando = true;
-    this.usuariosService.getAll().subscribe({
+    this.cargando.set(true);
+    this.usuariosService.getAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
-        this.usuarios = data || [];
-        this.cargando = false;
+        this.usuarios.set(data || []);
+        this.cargando.set(false);
       },
       error: (err) => {
         console.warn('Error cargando usuarios desde API:', err);
-        this.usuarios = [];
-        this.cargando = false;
+        this.usuarios.set([]);
+        this.cargando.set(false);
       },
     });
   }
 
-  get usuariosFiltrados(): UsuarioItem[] {
-    if (!this.busqueda.trim()) return this.usuarios;
-    const term = this.busqueda.toLowerCase();
-    return this.usuarios.filter(
-      (u) => u.nombre.toLowerCase().includes(term) || u.correo.toLowerCase().includes(term)
-    );
+  onBusquedaChange(val: string): void {
+    this.busqueda.set(val);
   }
 
   abrirModalCrear(): void {
-    this.usuarioEditarId = null;
-    this.mensajeError = '';
+    this.usuarioEditarId.set(null);
+    this.mensajeError.set('');
+    const rList = this.roles();
     this.usuarioForm.reset({
-      rol_id: this.roles[0]?.id || '',
+      rol_id: rList[0]?.id || '',
       estado: 'Activo',
       contrasena: 'Ecclesia2026*',
     });
-    this.modalCrear = true;
+    this.modalCrear.set(true);
   }
 
   abrirModalEditar(u: UsuarioItem): void {
-    this.usuarioEditarId = u.id || null;
-    this.mensajeError = '';
+    this.usuarioEditarId.set(u.id || null);
+    this.mensajeError.set('');
     this.usuarioForm.patchValue({
       correo: u.correo,
       contrasena: '',
       rol_id: u.rol_id || '',
       estado: u.estado,
     });
-    this.modalCrear = true;
+    this.modalCrear.set(true);
   }
 
   cerrarModal(): void {
-    this.modalCrear = false;
-    this.mensajeError = '';
+    this.modalCrear.set(false);
+    this.mensajeError.set('');
   }
 
   guardarUsuario(): void {
@@ -111,51 +122,49 @@ export class UsuariosListComponent implements OnInit {
       return;
     }
 
-    this.guardando = true;
-    this.mensajeError = '';
+    this.guardando.set(true);
+    this.mensajeError.set('');
     const val = this.usuarioForm.value;
+    const editarId = this.usuarioEditarId();
 
-    if (this.usuarioEditarId) {
-      // 1. Actualizar rol
+    if (editarId) {
       if (val.rol_id) {
-        this.rolesService.asignarRolAUsuario(this.usuarioEditarId, Number(val.rol_id)).subscribe();
+        this.rolesService.asignarRolAUsuario(editarId, Number(val.rol_id)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
       }
 
-      // 2. Actualizar estado (activo/inactivo)
-      this.usuariosService.cambiarEstado(this.usuarioEditarId, val.estado).subscribe({
+      this.usuariosService.cambiarEstado(editarId, val.estado).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
-          this.guardando = false;
+          this.guardando.set(false);
           this.cargarUsuarios();
           this.cerrarModal();
         },
         error: (err) => {
-          this.guardando = false;
-          this.mensajeError = err?.error?.detail || 'No se pudo actualizar el estado del usuario.';
+          this.guardando.set(false);
+          this.mensajeError.set(err?.error?.detail || 'No se pudo actualizar el estado del usuario.');
         },
       });
     } else {
-      // Crear nueva cuenta de usuario vía /auth/register
       const payload = {
         correo: val.correo,
         contrasena: val.contrasena || 'Ecclesia2026*',
       };
 
-      this.usuariosService.create(payload).subscribe({
+      this.usuariosService.create(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res) => {
           const newUserId = res?.id;
           if (newUserId && val.rol_id) {
-            this.rolesService.asignarRolAUsuario(newUserId, Number(val.rol_id)).subscribe();
+            this.rolesService.asignarRolAUsuario(newUserId, Number(val.rol_id)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
           }
           if (newUserId && val.estado) {
-            this.usuariosService.cambiarEstado(newUserId, val.estado).subscribe();
+            this.usuariosService.cambiarEstado(newUserId, val.estado).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
           }
-          this.guardando = false;
+          this.guardando.set(false);
           this.cargarUsuarios();
           this.cerrarModal();
         },
         error: (err) => {
-          this.guardando = false;
-          this.mensajeError = err?.error?.detail || 'No se pudo registrar el usuario. Verifique si el correo ya existe.';
+          this.guardando.set(false);
+          this.mensajeError.set(err?.error?.detail || 'No se pudo registrar el usuario. Verifique si el correo ya existe.');
         },
       });
     }
@@ -164,8 +173,10 @@ export class UsuariosListComponent implements OnInit {
   toggleEstado(u: UsuarioItem): void {
     if (!u.id) return;
     const nuevoEstado = u.estado === 'Activo' ? 'Inactivo' : 'Activo';
-    this.usuariosService.cambiarEstado(u.id, nuevoEstado).subscribe({
-      next: () => (u.estado = nuevoEstado),
+    this.usuariosService.cambiarEstado(u.id, nuevoEstado).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.usuarios.update(list => list.map(item => item.id === u.id ? { ...item, estado: nuevoEstado } : item));
+      },
       error: (err) => console.error('Error al cambiar estado:', err),
     });
   }
@@ -173,7 +184,7 @@ export class UsuariosListComponent implements OnInit {
   eliminarUsuario(u: UsuarioItem): void {
     if (!u.id) return;
     if (confirm(`¿Está seguro de eliminar al usuario ${u.correo}?`)) {
-      this.usuariosService.delete(u.id).subscribe({
+      this.usuariosService.delete(u.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => this.cargarUsuarios(),
         error: () => this.cargarUsuarios(),
       });
