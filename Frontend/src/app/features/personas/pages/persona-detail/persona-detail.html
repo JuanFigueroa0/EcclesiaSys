@@ -5,22 +5,22 @@
     </a>
   </div>
 
-  @if (cargando) {
+  @if (cargando()) {
     <div class="text-center py-5">
       <div class="spinner-border text-primary" role="status"></div>
       <p class="mt-2 text-muted">Cargando información...</p>
     </div>
-  } @else if (persona) {
+  } @else if (persona()) {
     <div class="row g-4">
       <div class="col-md-4">
         <div class="card border-0 shadow-sm text-center p-4">
           <div class="avatar-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
-            {{ iniciales }}
+            {{ iniciales() }}
           </div>
-          <h4 class="font-weight-bold mb-1">{{ persona.primer_nombre }} {{ persona.segundo_nombre }} {{ persona.primer_apellido }} {{ persona.segundo_apellido }}</h4>
-          <p class="text-muted mb-3">{{ persona.tipo_documento }}: {{ persona.numero_documento }}</p>
+          <h4 class="font-weight-bold mb-1">{{ persona()!.primer_nombre }} {{ persona()!.segundo_nombre }} {{ persona()!.primer_apellido }} {{ persona()!.segundo_apellido }}</h4>
+          <p class="text-muted mb-3">{{ persona()!.tipo_documento }}: {{ persona()!.numero_documento }}</p>
           <span class="badge bg-light text-dark border align-self-center px-3 py-2 text-capitalize">
-            <i class="bi bi-heart me-1"></i> Estado Civil: {{ persona.estado_civil }}
+            <i class="bi bi-heart me-1"></i> Estado Civil: {{ persona()!.estado_civil }}
           </span>
         </div>
       </div>
@@ -31,19 +31,19 @@
           <div class="row g-3">
             <div class="col-sm-6">
               <span class="text-muted d-block small">Fecha de Nacimiento</span>
-              <span class="fw-bold">{{ persona.fecha_nacimiento || 'No registrada' }}</span>
+              <span class="fw-bold">{{ persona()!.fecha_nacimiento || 'No registrada' }}</span>
             </div>
             <div class="col-sm-6">
               <span class="text-muted d-block small">Lugar de Nacimiento</span>
-              <span class="fw-bold">{{ persona.lugar_nacimiento || 'No registrado' }}</span>
+              <span class="fw-bold">{{ persona()!.lugar_nacimiento || 'No registrado' }}</span>
             </div>
             <div class="col-sm-6">
               <span class="text-muted d-block small">Sexo</span>
-              <span class="fw-bold text-capitalize">{{ persona.sexo || 'No especificado' }}</span>
+              <span class="fw-bold text-capitalize">{{ persona()!.sexo || 'No especificado' }}</span>
             </div>
             <div class="col-sm-6">
               <span class="text-muted d-block small">Cuenta de Usuario Vinculada</span>
-              <span class="fw-bold">{{ persona.tiene_usuario ? 'Sí (Activa)' : 'No vinculada' }}</span>
+              <span class="fw-bold">{{ persona()!.tiene_usuario ? 'Sí (Activa)' : 'No vinculada' }}</span>
             </div>
           </div>
         </div>

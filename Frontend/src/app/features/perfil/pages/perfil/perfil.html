@@ -1,4 +1,4 @@
-@if(cargando) {
+@if(cargando()) {
 
 <div class="text-center p-5">
   <span>Cargando perfil...</span>
@@ -6,7 +6,7 @@
 
 } @else {
 
-<div class="perfil-card" *ngIf="usuario">
+<div class="perfil-card" *ngIf="usuario()">
 
   <!-- AVATAR -->
   <div class="perfil-avatar">
@@ -15,12 +15,12 @@
 
   <!-- NOMBRE -->
   <h2>
-    {{ perfilForm.value.primer_nombre || usuario.correo }}
+    {{ perfilForm.value.primer_nombre || usuario()?.correo }}
     {{ perfilForm.value.primer_apellido || '' }}
   </h2>
 
   <!-- ALERTA -->
-  @if(!usuario?.perfil_completo) {
+  @if(!usuario()?.perfil_completo) {
   <div class="alert alert-warning mt-2">
     Perfil incompleto. Completa tu información.
   </div>
@@ -31,34 +31,34 @@
 <!-- TABS -->
 <div class="perfil-tabs">
 
-  <button [class.active]="activeTab === 'info'" (click)="cambiarTab('info')">
+  <button [class.active]="activeTab() === 'info'" (click)="cambiarTab('info')">
     Información personal
   </button>
 
-  <button [class.active]="activeTab === 'security'" (click)="cambiarTab('security')">
+  <button [class.active]="activeTab() === 'security'" (click)="cambiarTab('security')">
     Seguridad
   </button>
 
-  <button [class.active]="activeTab === 'sessions'" (click)="cambiarTab('sessions')">
+  <button [class.active]="activeTab() === 'sessions'" (click)="cambiarTab('sessions')">
     Sesiones
   </button>
 
 </div>
 
 <!-- FORMULARIO -->
-@if(activeTab === 'info') {
+@if(activeTab() === 'info') {
 
 <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()" class="ecclesia-card p-4">
 
-  @if (mensajeExito) {
+  @if (mensajeExito()) {
     <div class="alert alert-success border-0 shadow-sm mb-3">
-      <i class="bi bi-check-circle-fill me-2"></i>{{ mensajeExito }}
+      <i class="bi bi-check-circle-fill me-2"></i>{{ mensajeExito() }}
     </div>
   }
 
-  @if (mensajeError) {
+  @if (mensajeError()) {
     <div class="alert alert-danger border-0 shadow-sm mb-3">
-      <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajeError }}
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajeError() }}
     </div>
   }
 
@@ -153,12 +153,12 @@
 
   </div>
 
-  <button type="submit" class="ecclesia-btn mt-4" [disabled]="perfilForm.invalid || !hayCambios() || guardando">
+  <button type="submit" class="ecclesia-btn mt-4" [disabled]="perfilForm.invalid || !hayCambios() || guardando()">
 
-    @if (guardando) {
+    @if (guardando()) {
       <span class="spinner-border spinner-border-sm me-2"></span>Guardando...
     } @else {
-      {{ perfilExiste ? 'Actualizar perfil' : 'Completar perfil' }}
+      {{ perfilExiste() ? 'Actualizar perfil' : 'Completar perfil' }}
     }
 
   </button>
@@ -167,7 +167,7 @@
 
 }
 
-@if(activeTab === 'security') {
+@if(activeTab() === 'security') {
 
 <div class="ecclesia-card p-4">
 
@@ -214,7 +214,7 @@
 }
 
 <!-- SESIONES -->
-@if(activeTab === 'sessions') {
+@if(activeTab() === 'sessions') {
 
 <table class="table">
 
@@ -230,7 +230,7 @@
 
   <tbody>
 
-    @for(s of sesiones; track s.id) {
+    @for(s of sesiones(); track s.id) {
     <tr>
       <td>{{ s.dispositivo }}</td>
       <td>{{ s.ip_address }}</td>

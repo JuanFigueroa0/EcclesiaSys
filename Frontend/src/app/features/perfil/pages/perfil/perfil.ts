@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
@@ -10,23 +10,23 @@ import { PerfilService } from '../../services/perfil.service';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './perfil.html',
   styleUrl: './perfil.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PerfilComponent implements OnInit {
 
   private perfilService = inject(PerfilService);
   private fb = inject(FormBuilder);
 
-  usuario: any = null;
-  sesiones: any[] = [];
-  sesionesCargadas = false;
-
-  cargando = true;
-  guardando = false;
-  activeTab = 'info';
-  perfilExiste = false;
-
-  mensajeExito = '';
-  mensajeError = '';
+  // --- Signals (antes eran variables mutables simples) ---
+  usuario   = signal<any>(null);
+  sesiones  = signal<any[]>([]);
+  sesionesCargadas = signal(false);
+  cargando  = signal(true);
+  guardando = signal(false);
+  activeTab = signal('info');
+  perfilExiste = signal(false);
+  mensajeExito = signal('');
+  mensajeError = signal('');
 
   tiposDocumento = [
     { label: 'Cédula de Ciudadanía (CC)', value: 'CC' },
@@ -94,13 +94,13 @@ export class PerfilComponent implements OnInit {
         cachedUsuario,
         perfilResuelto ? cachedPerfil : undefined
       );
-      this.cargando = false;
+      this.cargando.set(false);
 
       if (perfilResuelto) {
         return;
       }
     } else {
-      this.cargando = true;
+      this.cargando.set(true);
     }
 
     forkJoin({
@@ -109,37 +109,37 @@ export class PerfilComponent implements OnInit {
     }).subscribe({
       next: ({ usuario, perfil }) => {
         this.aplicarDatos(usuario, perfil);
-        this.cargando = false;
+        this.cargando.set(false);
       },
       error: (err) => {
         console.error(err);
-        this.cargando = false;
+        this.cargando.set(false);
       },
     });
   }
 
   private aplicarDatos(usuario: any, perfil: any | null | undefined): void {
-    this.usuario = usuario;
+    this.usuario.set(usuario);
 
     if (perfil === undefined) {
       return;
     }
 
     if (perfil) {
-      this.perfilExiste = true;
+      this.perfilExiste.set(true);
       this.perfilForm.patchValue(perfil);
       this.perfilForm.markAsPristine();
       return;
     }
 
-    this.perfilExiste = false;
+    this.perfilExiste.set(false);
     this.perfilForm.markAsPristine();
   }
 
   cambiarTab(tab: string): void {
-    this.activeTab = tab;
+    this.activeTab.set(tab);
 
-    if (tab === 'sessions' && !this.sesionesCargadas) {
+    if (tab === 'sessions' && !this.sesionesCargadas()) {
       this.cargarSesiones();
     }
   }
@@ -147,8 +147,8 @@ export class PerfilComponent implements OnInit {
   cargarSesiones(): void {
     this.perfilService.getSesiones().subscribe({
       next: (data: any) => {
-        this.sesiones = data;
-        this.sesionesCargadas = true;
+        this.sesiones.set(data);
+        this.sesionesCargadas.set(true);
       },
       error: console.error,
     });
@@ -160,37 +160,38 @@ export class PerfilComponent implements OnInit {
       return;
     }
 
-    this.mensajeExito = '';
-    this.mensajeError = '';
-    this.guardando = true;
+    this.mensajeExito.set('');
+    this.mensajeError.set('');
+    this.guardando.set(true);
 
     const valores = this.perfilForm.value;
 
-    const request = this.perfilExiste
+    const request = this.perfilExiste()
       ? this.perfilService.actualizarPerfil(valores)
       : this.perfilService.crearPerfil(valores);
 
     request.subscribe({
       next: (res) => {
-        this.guardando = false;
-        this.mensajeExito = 'Perfil guardado correctamente.';
-        this.perfilExiste = true;
+        this.guardando.set(false);
+        this.mensajeExito.set('Perfil guardado correctamente.');
+        this.perfilExiste.set(true);
         this.perfilForm.patchValue(res);
         this.perfilForm.markAsPristine();
-        if (this.usuario) {
-          this.usuario.perfil_completo = true;
+        const u = this.usuario();
+        if (u) {
+          this.usuario.set({ ...u, perfil_completo: true });
         }
       },
       error: (err) => {
-        this.guardando = false;
+        this.guardando.set(false);
         console.error('Error al guardar perfil:', err);
         const detail = err?.error?.detail;
         if (typeof detail === 'string') {
-          this.mensajeError = detail;
+          this.mensajeError.set(detail);
         } else if (Array.isArray(detail)) {
-          this.mensajeError = detail.map((d: any) => d.msg || d).join(', ');
+          this.mensajeError.set(detail.map((d: any) => d.msg || d).join(', '));
         } else {
-          this.mensajeError = 'Ocurrió un error al intentar guardar los datos del perfil.';
+          this.mensajeError.set('Ocurrió un error al intentar guardar los datos del perfil.');
         }
       },
     });
@@ -221,7 +222,7 @@ export class PerfilComponent implements OnInit {
   }
 
   hayCambios(): boolean {
-    if (!this.perfilExiste) {
+    if (!this.perfilExiste()) {
       return true;
     }
     return this.perfilForm.dirty;

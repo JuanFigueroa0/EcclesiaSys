@@ -22,13 +22,8 @@ export class PersonasService {
     );
   }
 
-  getPersonaById(id: number): Observable<Persona | undefined> {
-    return this.http.get<Persona>(`${this.apiUrl}/${id}`).pipe(
-      catchError((err) => {
-        console.warn(`Error al consultar persona ${id} en backend:`, err);
-        return of(undefined);
-      })
-    );
+  getPersonaById(id: number): Observable<Persona> {
+    return this.http.get<Persona>(`${this.apiUrl}/${id}`);
   }
 
   createPersona(personaData: Partial<Persona>): Observable<Persona> {
