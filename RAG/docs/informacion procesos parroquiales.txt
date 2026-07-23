@@ -1,0 +1,377 @@
+# Base de información parroquial para RAG
+
+## Procesos de solicitud de partidas sacramentales
+
+### Solicitud de partidas de bautismo, confirmación o matrimonio
+
+Para solicitar partidas de bautismo, confirmación o matrimonio se deben enviar al correo parroquial los siguientes datos:
+- Nombres completos
+- Fecha de nacimiento (para partidas de bautismo o confirmación)
+- Fecha o año del sacramento
+- Nombre de los padres (para partidas de bautismo o confirmación)
+- Si tienen copia de la partida, adjuntarla
+
+Cuando la partida sea encontrada, se informa al solicitante con base en los datos suministrados y se indica el horario para recogerla.
+
+### Solicitud de partidas en archivo histórico
+
+Antes de solicitar una partida sacramental se debe verificar si el registro se encuentra en el listado disponible entre 1680 y 1938.
+
+Si la fecha buscada no aparece en el listado, si la parroquia no aparece o si el registro es posterior a 1938, la solicitud debe hacerse directamente ante la parroquia donde se celebró el sacramento.
+
+Si no se conoce la parroquia donde se celebró el sacramento y el registro es posterior a 1938, se debe acudir a la Vicaría Episcopal correspondiente para recibir orientación sobre el trámite adecuado para obtener el certificado.
+
+Para obtener la expedición de partidas sacramentales se deben leer previamente los pasos y requisitos, diligenciar completamente el formulario, adjuntar los anexos requeridos y esperar la validación de la solicitud por parte de la entidad que custodia el archivo.
+
+La confirmación de existencia o no existencia de la partida en el archivo consultado se entrega en dos días hábiles.
+
+La entrega estimada del certificado, una vez validada la solicitud, es de cinco a diez días hábiles.
+
+Cuando la información suministrada por el solicitante es incompleta, el trámite puede tardar más porque el archivo o la parroquia deben hacer una búsqueda adicional en sus registros.
+
+### Pasos para solicitar una partida sacramental
+
+1. Solicita la partida en la parroquia donde se celebró el sacramento
+2. Verifica la información revisando cuidadosamente los datos
+3. Reúne los documentos necesarios: cédula del titular, registro civil de nacimiento original (vigencia máxima de 90 días), cédulas de los padres en caso de corregir nombres
+4. Si los padres han fallecido: presentar registro civil de defunción original
+5. Radica los documentos en la parroquia
+6. La parroquia entrega un sobre sellado para presentarlo en la Vicaría
+7. Presenta la documentación en la Vicaría
+8. El notario auxiliar revisa los documentos e informa el tiempo estimado de entrega del trámite
+
+### Datos necesarios según el sacramento
+
+#### Bautismo
+- Nombre completo del bautizado
+- Fecha de nacimiento
+- Nombre de los padres
+
+#### Matrimonio
+- Nombre de los contrayentes
+- Fecha de celebración
+- Nombre de los padres
+
+#### Confirmación
+- Nombre completo del confirmado
+- Fecha de celebración
+- Nombre de los padres
+
+## Recogida y entrega de partidas
+
+### Opciones de recogida
+
+Las partidas pueden requerir recogida presencial en el despacho parroquial dentro del horario de atención definido por cada parroquia.
+
+Cuando el solicitante no puede acudir personalmente, algunas parroquias permiten autorizar a otra persona para recoger la partida.
+
+En algunos casos las partidas de menores de edad solo pueden ser recogidas por los padres o tutores legales, o por un tercero con autorización correspondiente.
+
+Algunas parroquias permiten el envío por correo si así se solicita expresamente durante el trámite.
+
+### Tiempos de espera
+
+El tiempo de entrega puede ser inmediato, dentro del mismo día, en días hábiles posteriores o quedar sujeto a la validación del archivo, según la forma en que cada parroquia gestione sus registros.
+
+En algunas parroquias, la entrega tarda aproximadamente una semana.
+
+En otras fuentes, la validez de la partida de bautismo es de seis meses, por lo que se recomienda no solicitarla con mucha anticipación.
+
+Algunas partidas tienen vigencia de 90 días (tres meses), por lo que es recomendable realizar la diligencia con 3 meses de anticipación a la fecha programada para el matrimonio.
+
+### Validez de las partidas
+
+La partida de bautismo tiene una validez de seis meses para trámites de matrimonio.
+
+La partida de confirmación tiene vigencia de dos meses.
+
+Las partidas presentadas para matrimonio deben tener fecha de expedición no mayor a 60 días o 90 días según la parroquia.
+
+## Bautismo
+
+### Requisitos para bautismo
+
+El trámite de bautismo aplica para niños menores de 7 años.
+
+Se debe pertenecer a la jurisdicción eclesial de la parroquia correspondiente.
+
+Si no se pertenece a la jurisdicción eclesial de la parroquia, se debe anexar una carta de la parroquia más cercana a la vivienda en la que se conceda permiso para realizar el bautismo en otra parroquia.
+
+Se debe presentar el registro civil original y reciente del niño o de la niña.
+
+Se debe presentar fotocopia del registro civil de los padres o copia de la partida de matrimonio.
+
+Si el bautismo es solicitado por uno solo de los padres y el otro no asistirá, se debe anexar una carta de consentimiento donde autorice voluntariamente la realización del bautismo.
+
+Se debe presentar fotocopia de la cédula de ciudadanía de los padres y de los padrinos.
+
+La partida de bautismo puede solicitarse 20 días después de realizado el bautismo.
+
+### Fechas de bautismo
+
+Los bautismos se realizan únicamente el segundo y cuarto sábado de cada mes a las 5:30 p.m.
+
+El tiempo de espera para la celebración del bautismo depende de la fecha disponible dentro del calendario parroquial y de la entrega completa de los documentos exigidos.
+
+Si la parroquia celebra bautismos solo en fechas fijas, la espera puede extenderse hasta el siguiente sábado programado para la ceremonia.
+
+### Requisitos adicionales para bautismo
+
+Para parejas casadas por la Iglesia:
+- Fotocopia del folio del registro civil del niño autenticado
+- Partida de Matrimonio de los padres (original)
+- Fotocopia de la cédula de ciudadanía de los padres y padrinos
+- Partida de Confirmación de los padrinos
+
+Para parejas no casadas por la Iglesia:
+- Fotocopia del folio del registro civil del niño autenticado
+- Fotocopia de la cédula de ciudadanía de los padres y padrinos
+- Partida de Confirmación de los padrinos
+
+## Matrimonio y licencias matrimoniales
+
+### Requisitos para matrimonio
+
+Para el trámite de matrimonio o licencias matrimoniales se debe pertenecer a la jurisdicción eclesial de la parroquia correspondiente.
+
+Se deben presentar las partidas de bautismo y confirmación de los novios, originales y recientes, con fecha de expedición no mayor a 60 días o 2 meses.
+
+Si las partidas pertenecen a una diócesis fuera de Bogotá, deben autenticarse en el lugar correspondiente.
+
+Se deben presentar los registros civiles originales y recientes de los novios, con fecha de expedición no mayor a 60 días o 2 meses.
+
+Se deben presentar dos fotografías tipo documento de cada uno de los novios.
+
+Se debe asistir al curso prematrimonial.
+
+Si se requiere licencia matrimonial, también se deben adjuntar los documentos anteriores.
+
+La documentación debe entregarse mínimo con mes y medio o 2 meses de anterioridad al matrimonio.
+
+Después de la verificación de los documentos, se programan las informaciones matrimoniales y debe asistir cada novio con un testigo que sea familiar en primer grado.
+
+El expediente matrimonial debe iniciarse unos meses antes de la boda para poder completar sin prisa los trámites y documentos necesarios.
+
+La espera para completar el trámite matrimonial no depende de una sola respuesta inmediata, sino de varias etapas: entrega de documentos, revisión, curso prematrimonial, autenticaciones si aplican, informaciones matrimoniales y asignación de fecha.
+
+### Requisitos adicionales para matrimonio
+
+- Partidas de Bautismo de los contrayentes, original y con nota marginal de Confirmación, con una expedición no mayor de 3 meses. Si la partida no tiene la nota marginal de la Confirmación, se debe presentar la partida de este sacramento de forma independiente.
+- Si las partidas son de otra diócesis, deben estar autenticadas por la diócesis respectiva.
+- Certificado del curso de preparación al Sacramento del Matrimonio
+- Fotocopia de la cédula de los novios
+- Fotocopia del folio del registro civil de los contrayentes autenticado
+- Fotocopia de la cédula de los testigos para el expediente matrimonial
+- Certificado de soltería del contrayente que no pertenece a esta parroquia
+- Una foto de cada uno de los novios, o dos si se van a casar en otra parroquia
+- Si la pareja tiene hijos en común habidos antes del matrimonio, traer partida de bautizo de los hijos para efectos de legitimación y fotocopia del folio del registro civil autenticado
+- Si antes han celebrado matrimonio civil o eclesiástico, debe presentar acta de divorcio civil o sentencia de nulidad y la dispensa correspondiente expedida por el tribunal eclesiástico
+
+### Dónde conseguir los papeles para matrimonio
+
+La partida de bautismo debe solicitarse en la iglesia en la que se realizó el sacramento, tramitándose a través del despacho parroquial.
+
+Si no saben en qué parroquia fue, o se realizó en otra ciudad, pueden solicitarla directamente en la diócesis de la ciudad correspondiente.
+
+La partida de confirmación también se solicita en el despacho parroquial o la diócesis según corresponda.
+
+Si alguno de los contrayentes no ha recibido la confirmación, deben comunicarle al párroco de la iglesia donde van a casarse para que puedan realizar una preparación corta.
+
+## Curso prematrimonial
+
+### Información sobre el curso prematrimonial
+
+Antes de inscribirse en un cursillo prematrimonial se debe contactar con la parroquia donde se tramitará el expediente matrimonial.
+
+La parroquia para tramitar el expediente suele ser la de residencia habitual de uno o ambos novios o la parroquia donde va a vivir la futura familia.
+
+El párroco informa a los novios sobre los cursos prematrimoniales disponibles y puede autorizar la asistencia a un curso distinto si no es posible realizar el organizado por la propia parroquia o por la vicaría correspondiente.
+
+El curso prematrimonial se realiza durante un fin de semana completo y la asistencia de ambos novios es obligatoria para obtener el certificado correspondiente.
+
+El tiempo de espera para iniciar el curso depende de la programación parroquial o vicarial y de la disponibilidad de cupos en las fechas habilitadas.
+
+## Confirmación
+
+### Requisitos para confirmación
+
+Para inscribirse a confirmación se exige partida de bautismo, tener cursado octavo grado o haber cumplido trece años y realizar catequesis.
+
+Las inscripciones para confirmación se realizan en el despacho parroquial.
+
+El tiempo de espera para recibir el sacramento depende del inicio del proceso de catequesis y del calendario de formación definido por la parroquia.
+
+## Primera comunión
+
+### Requisitos para primera comunión
+
+Para primera comunión se exige estar cursando tercero de primaria o tener ocho años y realizar la catequesis correspondiente.
+
+Las inscripciones para primera comunión se realizan en el despacho parroquial.
+
+El tiempo de espera para la celebración depende del proceso de catequesis y de las fechas programadas por la parroquia para esa celebración.
+
+## Autenticación de partidas
+
+### Proceso de autenticación
+
+Cuando una partida debe presentarse fuera de la diócesis o ante otra autoridad eclesiástica, puede requerirse autenticación adicional en la diócesis u obispado correspondiente.
+
+El tiempo de respuesta para la autenticación puede variar según la disponibilidad del funcionario competente.
+
+En la fuente consultada de la Diócesis de Zipaquirá, se procura devolver las partidas el mismo día o al día hábil siguiente.
+
+La misma fuente aclara que no se asegura devolución inmediata.
+
+## Reformas de partidas
+
+### Reforma de partida de bautismo
+
+1. Solicitud de reforma hecha en la parroquia por el interesado
+2. Partida original de Matrimonio de los padres con nota de legitimación
+3. Registro civil del bautizado
+4. Cédulas de los padres
+
+## Definiciones de términos
+
+### Términos generales
+
+**Partida sacramental**: Documento oficial que certifica la celebración de un sacramento como bautismo, confirmación, matrimonio o exequias. Contiene nombres, fechas, lugar y datos de los involucrados. Tiene validez para distintos trámites civiles y eclesiásticos.
+
+**Certificado sacramental**: Término equivalente a partida sacramental: documento que prueba la realización de un sacramento.
+
+**Cédula sacramental**: Otro nombre para certificado o partida de un sacramento.
+
+**Nota marginal de Confirmación**: Anotación en la partida de bautismo que indica que la persona recibió el sacramento de confirmación.
+
+**Autenticación eclesiástica**: Sello o firma de la diócesis que valida una partida para uso fuera de esa jurisdicción.
+
+**Legitimación**: Reconocimiento de un hijo nacido fuera del matrimonio mediante el matrimonio posterior de los padres.
+
+**Expediente matrimonial**: Conjunto de documentos requeridos para la celebración del matrimonio por la Iglesia: partidas, registros civiles, fotos, curso prematrimonial, informaciones matrimoniales.
+
+**Informaciones matrimoniales**: Declaraciones formales que se realizan durante el trámite matrimonial, en presencia de un testigo familiar en primer grado, para verificar que no hay impedimentos para el matrimonio.
+
+**Licencia matrimonial**: Permiso especial que se requiere cuando uno o ambos novios no cumplen algún requisito canónico habitual o cuando el matrimonio se celebra fuera de la jurisdicción habitual.
+
+**Dispensa eclesiástica**: Autorización especial del tribunal eclesiástico para casos donde hay impedimentos canónicos o situaciones especiales.
+
+**Vicaría Episcopal**: División territorial de la arquidiócesis o diócesis que agrupa varias parroquias. Sirve de referencia para orientación cuando no se conoce la parroquia exacta.
+
+**Jurisdicción eclesial**: Territorio o parroquia asignada a una persona según su lugar de residencia habitual donde debe realizar sus trámites sacramentales.
+
+**Catequesis**: Proceso de formación y preparación para recibir los sacramentos de iniciación cristiana: bautismo, confirmación y primera comunión.
+
+**Cursillo prematrimonial**: Retiro o curso breve de preparación para el matrimonio, normalmente de un fin de semana, que los novios deben completar antes de la boda.
+
+**Exequias**: Sacramento de difuntos o funerales. La partida de exequias certifica que se realizaron los ritos funerarios.
+
+**Párroco**: Sacerdote responsable de una parroquia. Es quien autoriza y firma los sacramentos y trámites.
+
+**Libro parroquial**: Registro donde se anotan los sacramentos celebrados en la parroquia. Puede ser de bautismos, matrimonios, confirmaciones o defunciones.
+
+**Partida reciente**: Partida cuya fecha de expedición no supera cierto límite, habitualmente 60 días o 2 meses, para usarse en trámites.
+
+**Autorización de recogida**: Documento por el cual el interesado autoriza a otra persona para recoger la partida en su nombre.
+
+**Diócesis**: Conjunto de parroquias bajo la autoridad de un obispo.
+
+**Arquidiócesis**: Conjunto de diócesis bajo la autoridad de un arzobispo.
+
+**Sacramento**: Rito religioso de la Iglesia católica que confiere gracia. Los principales sacramentos son bautismo, confirmación, eucaristía, penitencia, unción de enfermos, orden sacerdotal y matrimonio.
+
+**Registro civil**: Documento oficial del Estado que certifica nacimiento, matrimonio o defunción. Para trámites eclesiásticos se exige copia reciente.
+
+**Tutor legal**: Persona con autoridad legal sobre un menor cuando los padres no están disponibles.
+
+**Jurisdicción de residencia**: Parroquia correspondiente al lugar donde vive habitualmente la persona.
+
+**Trámite**: Conjunto de pasos necesarios para obtener un servicio o documento, como sacar una partida o inscribirse a un sacramento.
+
+**Validez de documentos**: Condición de que un documento sea aceptado. Por ejemplo, partidas con fecha de expedición no mayor a 60 días se consideran válidas para matrimonio.
+
+**Proceso de formación**: Catequesis o preparación para recibir un sacramento. Puede durar semanas o meses según el sacramento.
+
+**Secretaría parroquial**: Oficina de la parroquia donde se atiende al público y se tramitan documentos sacramentales.
+
+**Despacho parroquial**: Lugar físico donde se atiende a los feligreses para trámites, citas y sacramentos.
+
+**Archivo parroquial**: Lugar donde se conservan los libros sacramentales de la parroquia.
+
+**Notario auxiliar**: Funcionario eclesiástico que revisa documentos para reformas o autenticaciones.
+
+**Notaría eclesiástica**: Oficina de la diócesis o arquidiócesis que autentica documentos religiosos.
+
+**Tribunal eclesiástico**: Instancia que conoce casos de nulidad matrimonial y dispensas canónicas.
+
+**Nunciatura Apostólica**: Representación diplomática del Papa en un país. También autentica documentos para trámites internacionales.
+
+**Apostilla**: Sello internacional que valida documentos para uso en el extranjero.
+
+**Folio del registro civil**: Sección del registro civil donde aparece la información de una persona.
+
+**Foráneo**: Persona que no pertenece a esa parroquia o diócesis. Requiere certificado de soltería o autorización.
+
+**Certificado de soltería**: Documento que certifica que una persona no está casada. Se requiere para quienes no pertenecen a la parroquia.
+
+### Términos de validez
+
+**Validez de 60 días**: Las partidas deben tener fecha de expedición no mayor a 60 días para matrimonio.
+
+**Validez de 90 días**: Registro civil y algunas partidas tienen vigencia de 90 días.
+
+**Validez de 2 meses**: Equivalente a 60 días para partidas.
+
+**Validez de 3 meses**: Algunas partidas tienen validez de 3 meses según la parroquia.
+
+**Validez de 6 meses**: Partida de bautismo para matrimonio en algunas fuentes.
+
+### Términos de tiempo
+
+**Días hábiles**: Días de lunes a viernes, excluyendo festivos.
+
+**Mes y medio de anticipación**: Tiempo mínimo para entregar documentos de matrimonio.
+
+**2 meses de anticipación**: Tiempo recomendado para iniciar trámite matrimonial.
+
+**Segundo y cuarto sábado**: Frecuencia común para celebraciones de bautismo.
+
+### Horarios típicos
+
+**Horario de despacho**: Martes a viernes, comúnmente de 2:00 p.m. a 4:30 p.m. o de 9:00 a.m. a 12:00 m. y de 1:00 p.m. a 4:00 p.m.
+
+**Horario de archivo**: Varía según parroquia, comúnmente en horas de la tarde.
+
+### Para consultas y trámites
+
+**Cita previa**: Muchas parroquias requieren cita previa para trámites.
+
+**Comunicarse con la parroquia**: Primer paso para cualquier sacramento.
+
+**Concertar fecha**: La fecha de celebración se coordina directamente con la parroquia.
+
+**Participar en la preparación**: Requisito importante para todos los sacramentos.
+
+### Lugares donde se tramita
+
+**Parroquia donde se celebró el sacramento**: Lugar principal para solicitar partidas.
+
+**Diócesis**: Para sacramentos de otra ciudad o cuando no se conoce la parroquia.
+
+**Vicaría Episcopal**: Para orientación cuando no se conoce la parroquia.
+
+**Archivo histórico diocesano**: Para registros antiguos centralizados.
+
+### Documentos civiles relacionados
+
+**Registro civil de nacimiento**: Para bautismo y otros trámites.
+
+**Registro civil de matrimonio**: Para legitimación de hijos.
+
+**Registro civil de defunción**: Cuando los padres han fallecido.
+
+**Cédula de ciudadanía**: Identificación de padres, padrinos, novios y testigos.
+
+**Acta de divorcio civil**: Para quienes tuvieron matrimonio civil previo.
+
+**Sentencia de nulidad**: Para quienes tuvieron matrimonio eclesiástico previo.

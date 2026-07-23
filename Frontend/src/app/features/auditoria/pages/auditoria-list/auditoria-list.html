@@ -15,16 +15,14 @@
         <span class="text-muted small">Panel analítico interactivo en tiempo real</span>
       </div>
     </div>
-    <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm" style="max-height: 420px;">
-      <iframe title="PowerBI Report Auditoria" [src]="powerBiUrl" allowFullScreen="true" frameborder="0"></iframe>
-    </div>
   </div>
 
   <div class="row mb-4">
     <div class="col-md-4">
       <div class="input-group">
         <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
-        <input type="text" class="form-control border-start-0" placeholder="Buscar por usuario, módulo o acción..." [(ngModel)]="busqueda" />
+        <input type="text" class="form-control border-start-0" placeholder="Buscar por usuario, módulo o acción..."
+          [(ngModel)]="busqueda" />
       </div>
     </div>
   </div>
@@ -44,18 +42,18 @@
         </thead>
         <tbody>
           @for (l of filtrados; track l.id) {
-            <tr>
-              <td class="text-muted small font-monospace">{{ l.fecha }}</td>
-              <td class="fw-bold">{{ l.usuario }}</td>
-              <td><span class="badge bg-light text-dark border">{{ l.modulo }}</span></td>
-              <td><span class="badge {{ getBadgeClass(l.accion) }}">{{ l.accion }}</span></td>
-              <td class="small">{{ l.detalle }}</td>
-              <td class="text-muted small font-monospace">{{ l.ip }}</td>
-            </tr>
+          <tr>
+            <td class="text-muted small font-monospace">{{ l.fecha }}</td>
+            <td class="fw-bold">{{ l.usuario }}</td>
+            <td><span class="badge bg-light text-dark border">{{ l.modulo }}</span></td>
+            <td><span class="badge {{ getBadgeClass(l.accion) }}">{{ l.accion }}</span></td>
+            <td class="small">{{ l.detalle }}</td>
+            <td class="text-muted small font-monospace">{{ l.ip }}</td>
+          </tr>
           } @empty {
-            <tr>
-              <td colspan="6" class="text-center text-muted py-4">No hay registros de auditoría.</td>
-            </tr>
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">No hay registros de auditoría.</td>
+          </tr>
           }
         </tbody>
       </table>
